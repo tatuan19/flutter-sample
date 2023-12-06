@@ -20,7 +20,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
-    return MaterialApp.router(routerConfig: appRouter.config());
+    return MaterialApp.router(
+      routerConfig: appRouter.config(),
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 20.0),
+        ),
+      ),
+    );
   }
 }
 
