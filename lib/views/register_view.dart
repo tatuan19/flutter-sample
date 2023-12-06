@@ -3,14 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/firebase_options.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -65,35 +65,36 @@ class _LoginViewState extends State<LoginView> {
                   ElevatedButton(
                     onPressed: () async {
                       try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
                           email: _email.text,
                           password: _password.text,
                         );
                       } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
+                        if (e.code == 'weak-password') {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('No user found for that email.'),
+                              content:
+                                  Text('The password provided is too weak.'),
                             ),
                           );
-                        } else if (e.code == 'wrong-password') {
+                        } else if (e.code == 'email-already-in-use') {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                  'Wrong password provided for that user.'),
+                                  'The account already exists for that email.'),
                             ),
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(
-                                  'An error occurred. Please try again later.'),
+                              content: Text('An error occurred.'),
                             ),
                           );
                         }
                       }
                     },
-                    child: const Text('Login'),
+                    child: const Text('Register'),
                   ),
                 ],
               );
