@@ -31,6 +31,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Login'),
+      ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -94,6 +98,13 @@ class _LoginViewState extends State<LoginView> {
                       }
                     },
                     child: const Text('Login'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/register/', (route) => false);
+                    },
+                    child: const Text('Not registered yet? Register here!'),
                   ),
                 ],
               );
