@@ -3,8 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
-import 'dart:developer' as devtools show log;
-
 import 'views/login_view.dart';
 import 'views/room_view.dart';
 import 'views/routes/app_router.dart';
