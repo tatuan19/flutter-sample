@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:sample/views/routes/app_router.gr.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
@@ -210,7 +211,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                   ElevatedButton(
                     onPressed: () {
                       _controller.pause();
-                      // Add navigation logic to go to another screen
+                      context.router.push(const VideoChatRoute());
                     },
                     child: const Text('説明をスキップする'),
                   ),

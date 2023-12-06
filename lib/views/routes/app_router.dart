@@ -10,5 +10,6 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: MainRoute.page, initial: true),
         AutoRoute(page: WaitingRoute.page),
+        AutoRoute(page: VideoChatRoute.page),
       ];
 }
