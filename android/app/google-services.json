@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "460961603777",
+    "project_id": "flutter-sample-5d415",
+    "storage_bucket": "flutter-sample-5d415.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460961603777:android:f64c2d85378373ead5f440",
+        "android_client_info": {
+          "package_name": "linkbal.sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANhVkwkdr5E45xmWKaIDUcVO7rjwyFbDA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
