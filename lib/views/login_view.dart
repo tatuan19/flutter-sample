@@ -73,6 +73,10 @@ class _LoginViewState extends State<LoginView> {
                           email: _email.text,
                           password: _password.text,
                         );
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/rooms/',
+                          (_) => false,
+                        );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           ScaffoldMessenger.of(context).showSnackBar(

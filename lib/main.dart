@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login/': (context) => const LoginView(),
           '/register/': (context) => const RegisterView(),
+          '/rooms/': (context) => const RoomsView(),
         });
   }
 }
@@ -48,7 +49,7 @@ class HomePage extends StatelessWidget {
             if (user == null) {
               return const LoginView();
             } else {
-              return const RoomView();
+              return const RoomsView();
             }
           default:
             return const Center(
@@ -60,14 +61,14 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class RoomView extends StatefulWidget {
-  const RoomView({super.key});
+class RoomsView extends StatefulWidget {
+  const RoomsView({super.key});
 
   @override
-  State<RoomView> createState() => _RoomViewState();
+  State<RoomsView> createState() => _RoomsViewState();
 }
 
-class _RoomViewState extends State<RoomView> {
+class _RoomsViewState extends State<RoomsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
