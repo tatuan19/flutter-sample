@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/constants/routes.dart';
 import 'package:sample/firebase_options.dart';
+import 'package:sample/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -80,26 +81,26 @@ class _LoginViewState extends State<LoginView> {
                         );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('No user found for that email.'),
-                            ),
+                          await showErrorDialog(
+                            context,
+                            'No user found for that email.',
                           );
                         } else if (e.code == 'wrong-password') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Wrong password provided for that user.'),
-                            ),
+                          await showErrorDialog(
+                            context,
+                            'Wrong password provided for that user.',
                           );
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'An error occurred. Please try again later.'),
-                            ),
+                          await showErrorDialog(
+                            context,
+                            'An error occurred. Error: ${e.code}',
                           );
                         }
+                      } catch (e) {
+                        await showErrorDialog(
+                          context,
+                          'An error occurred. Error: $e',
+                        );
                       }
                     },
                     child: const Text('Login'),
