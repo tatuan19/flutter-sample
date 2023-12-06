@@ -11,30 +11,6 @@ class WaitingView extends StatefulWidget {
 }
 
 class _WaitingViewState extends State<WaitingView> {
-  late YoutubePlayerController _introVideoController;
-  late YoutubePlayerController _tutorialVideoController;
-
-  @override
-  void initState() {
-    _introVideoController = YoutubePlayerController(
-      initialVideoId: 'kcJ8ZS87Tdc',
-      flags: const YoutubePlayerFlags(mute: true),
-    );
-
-    _tutorialVideoController = YoutubePlayerController(
-      initialVideoId: 'kcJ8ZS87Tdc',
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: true),
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _introVideoController.dispose();
-    _tutorialVideoController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,16 +23,59 @@ class _WaitingViewState extends State<WaitingView> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            YoutubePlayerWidget(controller: _introVideoController),
-            const RoomInfo(),
-            YoutubePlayerWidget(controller: _tutorialVideoController),
+            IntroVideoPlayer(),
+            RoomInfo(),
+            FullScreenVideoPlayer(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class IntroVideoPlayer extends StatefulWidget {
+  const IntroVideoPlayer({super.key});
+
+  @override
+  State<IntroVideoPlayer> createState() => _IntroVideoPlayerState();
+}
+
+class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: 'kcJ8ZS87Tdc',
+      flags: const YoutubePlayerFlags(mute: true),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return YoutubePlayer(
+      controller: _controller,
+      showVideoProgressIndicator: true,
+      bottomActions: [
+        ProgressBar(
+          isExpanded: true,
+          colors: const ProgressBarColors(
+            playedColor: Colors.red,
+            handleColor: Colors.redAccent,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -110,25 +129,112 @@ class RoomInfo extends StatelessWidget {
   }
 }
 
-class YoutubePlayerWidget extends StatelessWidget {
-  final YoutubePlayerController controller;
+class FullScreenVideoPlayer extends StatefulWidget {
+  const FullScreenVideoPlayer({super.key});
 
-  const YoutubePlayerWidget({super.key, required this.controller});
+  @override
+  State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
+}
+
+class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
+  late YoutubePlayerController _controller;
+  bool skipVideo = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: 'kcJ8ZS87Tdc',
+      flags: const YoutubePlayerFlags(autoPlay: false, mute: true),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayer(
-      controller: controller,
-      showVideoProgressIndicator: true,
-      bottomActions: [
-        ProgressBar(
-          isExpanded: true,
-          colors: const ProgressBarColors(
-            playedColor: Colors.red,
-            handleColor: Colors.redAccent,
+    double height = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      height: height,
+      color: Colors.black, // Set black background color
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: true,
+            bottomActions: [
+              ProgressBar(
+                isExpanded: true,
+                colors: const ProgressBarColors(
+                  playedColor: Colors.red,
+                  handleColor: Colors.redAccent,
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+          const Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Icon(
+                Icons.arrow_downward,
+                size: 40.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Icon(
+                Icons.arrow_downward,
+                size: 40.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Column(children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _controller.pause();
+                      // Add navigation logic to go to another screen
+                    },
+                    child: const Text('説明をスキップする'),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                        value: skipVideo,
+                        onChanged: (value) {
+                          setState(() {
+                            skipVideo = value!;
+                          });
+                        },
+                      ),
+                      const Text(
+                        '今後もスキップする（後で設定画面から変更できます）',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ])),
+          )
+        ],
+      ),
     );
   }
 }
