@@ -1,10 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/constants/routes.dart';
 import 'package:sample/firebase_options.dart';
 import 'package:sample/utilities/dialogs/error_dialog.dart';
+import 'package:sample/views/routes/app_router.gr.dart';
 
+@RoutePage()
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -75,10 +77,7 @@ class _LoginViewState extends State<LoginView> {
                           email: _email.text,
                           password: _password.text,
                         );
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          roomsRoute,
-                          (_) => false,
-                        );
+                        context.router.replace(const RoomsRoute());
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           await showErrorDialog(
@@ -107,8 +106,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          registerRoute, (route) => false);
+                      context.router.replace(const RegisterRoute());
                     },
                     child: const Text('Not registered yet? Register here!'),
                   ),

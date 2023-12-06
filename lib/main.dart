@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'dart:developer' as devtools show log;
 
-import 'constants/routes.dart';
 import 'views/login_view.dart';
-import 'views/register_view.dart';
 import 'views/room_view.dart';
+import 'views/routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,18 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
-          useMaterial3: true,
-        ),
-        home: const HomePage(),
-        routes: {
-          loginRoute: (context) => const LoginView(),
-          registerRoute: (context) => const RegisterView(),
-          roomsRoute: (context) => const RoomsView(),
-        });
+    AppRouter appRouter = AppRouter();
+    return MaterialApp.router(routerConfig: appRouter.config());
   }
 }
 

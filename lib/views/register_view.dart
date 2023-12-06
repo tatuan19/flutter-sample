@@ -1,10 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/constants/routes.dart';
 import 'package:sample/firebase_options.dart';
 import 'package:sample/utilities/dialogs/error_dialog.dart';
+import 'package:sample/views/routes/app_router.gr.dart';
 
+@RoutePage()
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
@@ -94,8 +96,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          loginRoute, (route) => false);
+                      context.router.replace(const LoginRoute());
                     },
                     child: const Text('Already registered? Login here!'),
                   ),

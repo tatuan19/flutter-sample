@@ -1,10 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sample/views/routes/app_router.gr.dart';
 
-import '../constants/routes.dart';
 import '../enums/menu_action.dart';
 import '../utilities/dialogs/logout_dialog.dart';
 
+@RoutePage()
 class RoomsView extends StatefulWidget {
   const RoomsView({super.key});
 
@@ -27,10 +29,7 @@ class _RoomsViewState extends State<RoomsView> {
                   final confirmed = await showLogOutDialog(context);
                   if (confirmed) {
                     await FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
-                    );
+                    context.router.replace(const LoginRoute());
                   }
                   break;
               }
