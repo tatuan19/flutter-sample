@@ -146,7 +146,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     super.initState();
     _controller = YoutubePlayerController(
       initialVideoId: 'kcJ8ZS87Tdc',
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: true),
+      flags: const YoutubePlayerFlags(autoPlay: false),
     );
   }
 
