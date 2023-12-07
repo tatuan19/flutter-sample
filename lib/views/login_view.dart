@@ -77,7 +77,7 @@ class _LoginViewState extends State<LoginView> {
                           email: _email.text,
                           password: _password.text,
                         );
-                        context.router.replace(const RoomsRoute());
+                        context.router.replace(const WaitingRoute());
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           await showErrorDialog(

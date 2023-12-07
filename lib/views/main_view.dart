@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:sample/helpers/theme/size.dart';
+import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/views/routes/app_router.gr.dart';
 import 'package:sample/views/waiting_view.dart';
 
@@ -27,22 +29,34 @@ class _MainViewState extends State<MainView> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
+            selectedIcon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
             icon: Icon(Icons.home_outlined),
             label: 'オンラインで参加',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.brunch_dining),
+            selectedIcon: Icon(
+              Icons.brunch_dining,
+              color: Colors.white,
+            ),
             icon: Icon(Icons.brunch_dining_outlined),
             label: '店舗で参加',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.message),
+            selectedIcon: Icon(
+              Icons.message,
+              color: Colors.white,
+            ),
             icon: Icon(Icons.message_outlined),
             label: 'メッセージ',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.person),
+            selectedIcon: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
             icon: Icon(Icons.person_outline),
             label: 'マイページ',
           ),
@@ -56,6 +70,7 @@ class _MainViewState extends State<MainView> {
       ][currentPageIndex],
       floatingActionButton: buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // TODO: Remove animation when floating button appears
     );
   }
 
@@ -71,39 +86,30 @@ class EnterRoomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                context.router.push(const WaitingRoute());
-              },
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)),
-                  backgroundColor: Colors.grey[700]),
-              child: const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '席に案内してもらう',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '(お相手が見つかると、1on1が開始します。)',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+        child: GreyButton(
+            height: ButtonSize.large,
+            onPressed: () {
+              context.router.push(const WaitingRoute());
+            },
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '席に案内してもらう',
+                  style: TextStyle(
+                    fontSize: FontSize.large,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
+                Text(
+                  '(お相手が見つかると、1on1が開始します。)',
+                  style: TextStyle(
+                    fontSize: FontSize.small,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             )));
   }
 }

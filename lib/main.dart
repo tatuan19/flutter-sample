@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sample/helpers/theme/size.dart';
+import 'package:sample/views/waiting_view.dart';
 
 import 'firebase_options.dart';
 import 'views/login_view.dart';
-import 'views/room_view.dart';
 import 'views/routes/app_router.dart';
 
 void main() async {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       routerConfig: appRouter.config(),
       theme: ThemeData(
         textTheme: const TextTheme(
-          bodyMedium: TextStyle(fontSize: 20.0),
+          bodyMedium: TextStyle(fontSize: FontSize.medium),
         ),
       ),
     );
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
             if (user == null) {
               return const LoginView();
             } else {
-              return const RoomsView();
+              return const WaitingView();
             }
           default:
             return const Center(

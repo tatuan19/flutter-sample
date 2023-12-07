@@ -8,8 +8,8 @@ class AppRouter extends $AppRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: RegisterRoute.page),
-        AutoRoute(page: MainRoute.page, initial: true),
+        AutoRoute(page: MainRoute.page, initial: false),
         AutoRoute(page: WaitingRoute.page),
-        AutoRoute(page: VideoChatRoute.page),
+        AutoRoute(page: VoiceChatRoute.page, initial: true),
       ];
 }
