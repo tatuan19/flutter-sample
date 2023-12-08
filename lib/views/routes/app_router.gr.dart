@@ -12,7 +12,7 @@ import 'package:auto_route/auto_route.dart' as _i6;
 import 'package:sample/views/login_view.dart' as _i1;
 import 'package:sample/views/main_view.dart' as _i2;
 import 'package:sample/views/register_view.dart' as _i3;
-import 'package:sample/views/voice_chat_view.dart' as _i4;
+import 'package:sample/views/voice_channel/voice_channel_view.dart' as _i4;
 import 'package:sample/views/waiting_view.dart' as _i5;
 
 abstract class $AppRouter extends _i6.RootStackRouter {
@@ -41,7 +41,7 @@ abstract class $AppRouter extends _i6.RootStackRouter {
     VoiceChatRoute.name: (routeData) {
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.VoiceChatView(),
+        child: const _i4.VoiceChannelView(),
       );
     },
     WaitingRoute.name: (routeData) {
@@ -96,7 +96,7 @@ class RegisterRoute extends _i6.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i4.VoiceChatView]
+/// [_i4.VoiceChannelView]
 class VoiceChatRoute extends _i6.PageRouteInfo<void> {
   const VoiceChatRoute({List<_i6.PageRouteInfo>? children})
       : super(
