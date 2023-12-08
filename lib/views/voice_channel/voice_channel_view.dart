@@ -2,8 +2,11 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sample/helpers/theme/sizes.dart';
+import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/helpers/widgets/sound_wave.dart';
 import 'package:sample/views/voice_channel/widgets/bottom_action_bar.dart';
+import 'package:sample/views/voice_channel/widgets/countdown_timer_text.dart';
 import 'package:sample/views/voice_channel/widgets/guidance.dart';
 
 @RoutePage()
@@ -16,11 +19,11 @@ class VoiceChannelView extends StatefulWidget {
 
 class _VoiceChannelViewState extends State<VoiceChannelView> {
   int uid = 0; // uid of the local user
+  GuidanceStep step = GuidanceStep.duringConversation;
+  Duration remainingTime = const Duration(seconds: 10);
+  Duration? remindThreshold = const Duration(seconds: 5);
 
-  int? _remoteUid; // uid of the remote user
-  bool _isJoined = false; // Indicates if the local user has joined the channel
-  int remainTime = 0;
-  late RtcEngine agoraEngine; // Agora engine instance
+  late RtcEngine agoraEngine;
 
   @override
   void initState() {
@@ -62,40 +65,12 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
+                  height: 500,
+                  width: double.maxFinite,
                   color: Colors.black.withOpacity(0.5),
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 200, child: _guidedance()),
-                          const Padding(
-                              padding: EdgeInsets.only(top: 20, bottom: 30),
-                              child: UserSoundWave()),
-                          const SafeArea(top: false, child: BottomActionBar())
-                          // Row(
-                          //   children: <Widget>[
-                          //     const SizedBox(width: 10),
-                          //     Expanded(
-                          //       child: ElevatedButton(
-                          //         child: const Text("Join"),
-                          //         onPressed: () => {joinChannel()},
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // Row(
-                          //   children: <Widget>[
-                          //     const SizedBox(width: 10),
-                          //     Expanded(
-                          //       child: ElevatedButton(
-                          //         child: const Text("Leave"),
-                          //         onPressed: () => {leave()},
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        ],
-                      )),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: _guidedance()),
                 )),
           ]),
         ));
@@ -115,18 +90,18 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           setState(() {
-            _isJoined = true;
+            step = GuidanceStep.waiting;
           });
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           setState(() {
-            _remoteUid = remoteUid;
+            step = GuidanceStep.beginning;
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           setState(() {
-            _remoteUid = null;
+            step = GuidanceStep.ending;
           });
         },
       ),
@@ -150,24 +125,88 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
 
   void leave() {
     setState(() {
-      _isJoined = false;
-      _remoteUid = null;
+      step = GuidanceStep.ending;
     });
     agoraEngine.leaveChannel();
   }
 
   Widget _guidedance() {
-    if (!_isJoined) {
-      return const WaitingGuidance();
-    } else if (_remoteUid == null) {
-      return const BeginningGuidance();
-    } else if (remainTime > 180) {
-      return DuringConversationGuidedance(remainTime: remainTime);
-    } else if (remainTime > 0) {
-      return TimeReminderGuidance(remainTime: remainTime);
+    Widget topChild;
+    Widget centerChild;
+    Widget bottomChild;
+
+    if (step == GuidanceStep.duringConversation ||
+        step == GuidanceStep.reminder) {
+      topChild = CountdownTimerText(
+          duration: remainingTime,
+          remindThreshold: remindThreshold,
+          onRemindThresholdReached: () {
+            setState(() {
+              remainingTime = remindThreshold ?? const Duration(seconds: 0);
+              remindThreshold = null;
+              step = GuidanceStep.reminder;
+            });
+          },
+          onTimerEnd: () {
+            setState(() {
+              step = GuidanceStep.rating;
+            });
+          });
     } else {
-      return const EndingGuidance();
+      topChild = const SizedBox(height: 1);
     }
+
+    switch (step) {
+      case GuidanceStep.waiting:
+        centerChild = const WaitingGuidance();
+      case GuidanceStep.beginning:
+        centerChild = const BeginningGuidance();
+      case GuidanceStep.duringConversation:
+        centerChild = const DuringConversationGuidance();
+      case GuidanceStep.reminder:
+        centerChild = const ReminderGuidance();
+      case GuidanceStep.rating:
+        centerChild = RatingGuidance(onRatingUpdate: (rating) {});
+      case GuidanceStep.ending:
+        centerChild = const EndingGuidance();
+      default:
+        centerChild = const WaitingGuidance();
+    }
+
+    if (step == GuidanceStep.rating) {
+      bottomChild = Column(children: [
+        GreyButton(
+            width: 200,
+            onPressed: () {},
+            child: const Text(
+              '評価する',
+              style: TextStyle(
+                  fontSize: FontSize.large,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            )),
+        const SizedBox(height: 20.0),
+        const Text('自分がつけた評価は、相手には分かりません。',
+            style: TextStyle(fontSize: FontSize.small, color: Colors.white))
+      ]);
+    } else if (step == GuidanceStep.ending) {
+      bottomChild = const SizedBox(height: 1);
+    } else {
+      bottomChild = const Column(children: [
+        UserSoundWave(),
+        SizedBox(height: 30.0),
+        BottomActionBar()
+      ]);
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        topChild,
+        centerChild,
+        SafeArea(top: false, child: bottomChild)
+      ],
+    );
   }
 }
 

@@ -26,13 +26,6 @@ class _LoginViewState extends State<LoginView> {
   }
 
   @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -118,5 +111,12 @@ class _LoginViewState extends State<LoginView> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
   }
 }

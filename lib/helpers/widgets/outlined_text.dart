@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
 class OutlinedText extends StatelessWidget {
-  final String text;
-  final double? fontSize;
-  final FontWeight fontWeight;
-  final Color textColor;
-  final Color borderColor;
-
   const OutlinedText({
     super.key,
     required this.text,
@@ -15,6 +9,12 @@ class OutlinedText extends StatelessWidget {
     required this.textColor,
     required this.borderColor,
   });
+
+  final String text;
+  final double? fontSize;
+  final FontWeight fontWeight;
+  final Color textColor;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {

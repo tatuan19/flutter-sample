@@ -16,12 +16,6 @@ class WaitingView extends StatefulWidget {
 class _WaitingViewState extends State<WaitingView> {
   final ScrollController _scrollController = ScrollController();
 
-  @override
-  void dispose() {
-    _scrollController.dispose(); // Dispose of the controller when done
-    super.dispose();
-  }
-
   void scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -125,6 +119,12 @@ class _WaitingViewState extends State<WaitingView> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }
 
 class IntroVideoPlayer extends StatefulWidget {
@@ -147,12 +147,6 @@ class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return YoutubePlayer(
       controller: _controller,
@@ -167,6 +161,12 @@ class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
@@ -241,12 +241,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Expanded(
         child: Align(
@@ -265,5 +259,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         ],
       ),
     ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

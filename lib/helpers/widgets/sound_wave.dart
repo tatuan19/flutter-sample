@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class SoundWave extends StatelessWidget {
-  final bool isTalking = true;
-
   const SoundWave({super.key, hasSound});
+
+  final bool isTalking = true;
 
   @override
   Widget build(BuildContext context) {

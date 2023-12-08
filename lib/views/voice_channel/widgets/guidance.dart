@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/outlined_text.dart';
+
+enum GuidanceStep {
+  waiting,
+  beginning,
+  duringConversation,
+  reminder,
+  rating,
+  ending
+}
 
 class WaitingGuidance extends StatelessWidget {
   const WaitingGuidance({super.key});
@@ -43,42 +52,77 @@ class WaitingGuidance extends StatelessWidget {
   }
 }
 
-class BeginningGuidance extends StatelessWidget {
-  const BeginningGuidance({super.key});
+class BeginningGuidance extends StatefulWidget {
+  const BeginningGuidance({Key? key}) : super(key: key);
+
+  @override
+  _BeginningGuidanceState createState() => _BeginningGuidanceState();
+}
+
+class _BeginningGuidanceState extends State<BeginningGuidance>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _animation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
-        'まもなく\n1on1が開始します',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: 30.0),
-      SizedBox(
-          height: 70.0,
-          child: LoadingIndicator(
-            indicatorType: Indicator.ballSpinFadeLoader,
-            colors: [Colors.white],
-          ))
-    ]);
+    return SlideTransition(
+        position: _animation,
+        child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'まもなく\n1on1が開始します',
+                style: TextStyle(
+                  fontSize: FontSize.large,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 30.0),
+              SizedBox(
+                  height: 70.0,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.ballSpinFadeLoader,
+                    colors: [Colors.white],
+                  ))
+            ]));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
-class DuringConversationGuidedance extends StatelessWidget {
-  final int remainTime;
-
-  const DuringConversationGuidedance({super.key, required this.remainTime});
+class DuringConversationGuidance extends StatelessWidget {
+  const DuringConversationGuidance({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      TimeCounter(remainTime: remainTime),
-      const SizedBox(height: 20.0),
       const Text(
         '1on1が開始しました\nまずは自己紹介をしましょう',
         style: TextStyle(
@@ -94,18 +138,74 @@ class DuringConversationGuidedance extends StatelessWidget {
   }
 }
 
-class TimeReminderGuidance extends StatelessWidget {
-  final int remainTime;
+class ReminderGuidance extends StatefulWidget {
+  const ReminderGuidance({super.key});
 
-  const TimeReminderGuidance({super.key, required this.remainTime});
+  @override
+  State<ReminderGuidance> createState() => _ReminderGuidanceState();
+}
+
+class _ReminderGuidanceState extends State<ReminderGuidance>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _animation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+        position: _animation,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Text(
+            '残り時間、\n1on1を楽しみましょう',
+            style: TextStyle(
+              fontSize: FontSize.large,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 30.0),
+          TopicRow(topics: suggestedTopics['end']!)
+        ]));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class RatingGuidance extends StatelessWidget {
+  const RatingGuidance({super.key, required this.onRatingUpdate});
+
+  final ValueChanged<double> onRatingUpdate;
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      TimeCounter(remainTime: remainTime),
-      const SizedBox(height: 20.0),
       const Text(
-        '残り時間、\n1on1を楽しみましょう',
+        '1on1が終了しました\nきなこさんのマナーを評価してください',
         style: TextStyle(
           fontSize: FontSize.large,
           fontWeight: FontWeight.bold,
@@ -114,18 +214,22 @@ class TimeReminderGuidance extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 30.0),
-      TopicRow(topics: suggestedTopics['end']!)
+      RatingBar(
+        ratingWidget: RatingWidget(
+            empty: const Icon(
+              Icons.star_outlined,
+              color: Colors.amber,
+            ),
+            half: const Icon(Icons.star_half, color: Colors.amber),
+            full: const Icon(Icons.star, color: Colors.amber)),
+        onRatingUpdate: onRatingUpdate,
+        initialRating: 3,
+        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+        minRating: 1,
+        allowHalfRating: true,
+        updateOnDrag: true,
+      ),
     ]);
-  }
-}
-
-class RatingGuidance extends StatelessWidget {
-  const RatingGuidance({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-        mainAxisAlignment: MainAxisAlignment.center, children: []);
   }
 }
 
@@ -139,45 +243,10 @@ class EndingGuidance extends StatelessWidget {
   }
 }
 
-class TimeCounter extends StatelessWidget {
-  final int remainTime;
-
-  const TimeCounter({super.key, required this.remainTime});
-
-  @override
-  Widget build(BuildContext context) {
-    var minutes = remainTime ~/ 60;
-    var seconds = (remainTime % 60);
-    Color timeColor = remainTime < 180 ? Colors.red : Colors.white;
-
-    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      const Text(
-        '残り時間：',
-        style: TextStyle(color: Colors.white),
-      ),
-      if (remainTime < 180)
-        OutlinedText(
-          text: '$minutes:$seconds',
-          fontWeight: FontWeight.bold,
-          textColor: Colors.white,
-          borderColor: Colors.red,
-        )
-      else
-        Text(
-          '$minutes:$seconds',
-          style: TextStyle(
-              fontSize: FontSize.small,
-              color: timeColor,
-              fontWeight: FontWeight.bold),
-        )
-    ]);
-  }
-}
-
 class TopicRow extends StatelessWidget {
-  final List<String> topics;
-
   const TopicRow({super.key, required this.topics});
+
+  final List<String> topics;
 
   @override
   Widget build(BuildContext context) {

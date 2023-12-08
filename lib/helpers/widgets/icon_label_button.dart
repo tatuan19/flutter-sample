@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sample/helpers/theme/sizes.dart';
 
 class IconLabelButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-  final String label;
-  final double iconSize;
-  final double fontSize;
-  final Color textColor;
-  final Color buttonColor;
-
   const IconLabelButton({
     super.key,
     required this.icon,
@@ -20,6 +12,14 @@ class IconLabelButton extends StatelessWidget {
     this.textColor = Colors.white,
     this.buttonColor = Colors.white,
   });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+  final String label;
+  final double iconSize;
+  final double fontSize;
+  final Color textColor;
+  final Color buttonColor;
 
   @override
   Widget build(BuildContext context) {

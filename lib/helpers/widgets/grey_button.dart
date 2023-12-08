@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
 class GreyButton extends StatelessWidget {
-  final double width;
-  final double? height;
-  final Function onPressed;
-  final Widget child;
-
   const GreyButton({
     super.key,
     this.width = double.infinity,
@@ -13,6 +8,11 @@ class GreyButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
   });
+
+  final double width;
+  final double? height;
+  final Function onPressed;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

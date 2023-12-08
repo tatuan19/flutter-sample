@@ -26,13 +26,6 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -108,5 +101,12 @@ class _RegisterViewState extends State<RegisterView> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
   }
 }
