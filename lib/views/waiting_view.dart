@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sample/helpers/theme/sizes.dart';
 import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/views/routes/app_router.gr.dart';
+import 'package:sample/views/routes/router_key.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
@@ -15,6 +16,8 @@ class WaitingView extends StatefulWidget {
 
 class _WaitingViewState extends State<WaitingView> {
   final ScrollController _scrollController = ScrollController();
+
+  bool dateEnded = false;
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -62,7 +65,7 @@ class _WaitingViewState extends State<WaitingView> {
                   ),
                   height: height,
                   child: SafeArea(
-                      child: Column(children: [
+                      child: Stack(children: [
                     Align(
                       alignment: Alignment.topLeft,
                       child: IconButton(
@@ -75,44 +78,65 @@ class _WaitingViewState extends State<WaitingView> {
                         highlightColor: Colors.transparent,
                       ),
                     ),
-                    const FullScreenVideoPlayer(),
-                    Column(children: [
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20.0),
-                          child: GreyButton(
-                            height: ButtonSize.large,
-                            onPressed: () {
-                              context.router.push(const VoiceChatRoute());
-                            },
-                            child: const Text(
-                              '説明をスキップする',
-                              style: TextStyle(
-                                fontSize: FontSize.large,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: false,
-                            onChanged: (value) {},
-                            side: const BorderSide(
-                                color: Colors.white, width: 2.0),
-                          ),
-                          const Text(
-                            '今後もスキップする（後で設定画面から変更できます）',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: FontSize.small,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      )
-                    ]),
+                    const Align(
+                        alignment: Alignment.center,
+                        child: FullScreenVideoPlayer()),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: !dateEnded
+                            ? Column(mainAxisSize: MainAxisSize.min, children: [
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20.0),
+                                    child: GreyButton(
+                                      height: ButtonHeight.large,
+                                      onPressed: () async {
+                                        final result = await context.router
+                                            .push(const VoiceChatRoute());
+
+                                        if (result != null &&
+                                            result == RouterKey.dateEnded) {
+                                          setState(() {
+                                            dateEnded = true;
+                                          });
+                                        }
+                                      },
+                                      child: const Text(
+                                        '説明をスキップする',
+                                        style: TextStyle(
+                                          fontSize: FontSize.large,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )),
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: false,
+                                      onChanged: (value) {},
+                                      side: const BorderSide(
+                                          color: Colors.white, width: 2.0),
+                                    ),
+                                    const Text(
+                                      '今後もスキップする（後で設定画面から変更できます）',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ])
+                            : const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 100),
+                                child: Text('THANK YOU!',
+                                    style: TextStyle(
+                                      fontSize: FontSize.huge,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ))))
                   ])))
           ],
         ),
@@ -242,23 +266,19 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Align(
-      alignment: Alignment.center,
-      child: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        bottomActions: [
-          ProgressBar(
-            isExpanded: true,
-            colors: const ProgressBarColors(
-              playedColor: Colors.red,
-              handleColor: Colors.redAccent,
-            ),
+    return YoutubePlayer(
+      controller: _controller,
+      showVideoProgressIndicator: true,
+      bottomActions: [
+        ProgressBar(
+          isExpanded: true,
+          colors: const ProgressBarColors(
+            playedColor: Colors.red,
+            handleColor: Colors.redAccent,
           ),
-        ],
-      ),
-    ));
+        ),
+      ],
+    );
   }
 
   @override

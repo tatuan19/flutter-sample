@@ -143,7 +143,6 @@ class RatingGuidance extends StatelessWidget {
       const SizedBox(height: 30.0),
       CustomRatingBar(
         maxRating: 5,
-        minRating: 1,
         initialRating: 3,
         itemSize: 40.0,
         ratedIcon: Icons.star,
@@ -161,8 +160,30 @@ class EndingGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-        mainAxisAlignment: MainAxisAlignment.center, children: []);
+    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(
+        '1on1が終了しました\nこのまま1on1を続けますか？',
+        style: TextStyle(
+          fontSize: FontSize.large,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 30.0),
+      Text(
+        '待ち時間：約3分',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      Text(
+        '待ち人数：男性2名待ち',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ]);
   }
 }
 

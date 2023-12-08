@@ -87,7 +87,7 @@ class EnterRoomButton extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: GreyButton(
-            height: ButtonSize.large,
+            height: ButtonHeight.large,
             onPressed: () {
               context.router.push(const WaitingRoute());
             },

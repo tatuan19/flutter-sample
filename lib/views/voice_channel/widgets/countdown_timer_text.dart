@@ -69,7 +69,7 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
     final seconds =
         _remainingTime.inSeconds.remainder(60).toString().padLeft(2, '0');
 
-    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+    return Row(mainAxisSize: MainAxisSize.min, children: [
       const Text(
         '残り時間：',
         style: TextStyle(color: Colors.white),

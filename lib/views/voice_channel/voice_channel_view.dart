@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sample/helpers/theme/sizes.dart';
 import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/helpers/widgets/sound_wave.dart';
+import 'package:sample/views/routes/router_key.dart';
 import 'package:sample/views/voice_channel/widgets/bottom_action_bar.dart';
 import 'package:sample/views/voice_channel/widgets/countdown_timer_text.dart';
 import 'package:sample/views/voice_channel/widgets/guidance.dart';
@@ -19,7 +20,7 @@ class VoiceChannelView extends StatefulWidget {
 
 class _VoiceChannelViewState extends State<VoiceChannelView> {
   int uid = 0; // uid of the local user
-  GuidanceStep step = GuidanceStep.rating;
+  GuidanceStep step = GuidanceStep.duringConversation;
   Duration remainingTime = const Duration(seconds: 10);
   Duration remindThreshold = const Duration(seconds: 5);
 
@@ -69,7 +70,7 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
                   width: double.maxFinite,
                   color: Colors.black.withOpacity(0.5),
                   child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
                       child: _guidedance()),
                 )),
           ]),
@@ -131,28 +132,9 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
   }
 
   Widget _guidedance() {
-    Widget topChild;
     Widget centerChild;
+    Widget countdownTimer;
     Widget bottomChild;
-
-    if (step == GuidanceStep.duringConversation ||
-        step == GuidanceStep.reminder) {
-      topChild = CountdownTimerText(
-          duration: remainingTime,
-          remindThreshold: remindThreshold,
-          onRemindThresholdReached: () {
-            setState(() {
-              step = GuidanceStep.reminder;
-            });
-          },
-          onTimerEnd: () {
-            setState(() {
-              step = GuidanceStep.rating;
-            });
-          });
-    } else {
-      topChild = const SizedBox(height: 1);
-    }
 
     switch (step) {
       case GuidanceStep.waiting:
@@ -171,11 +153,34 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
         centerChild = const WaitingGuidance();
     }
 
+    if (step == GuidanceStep.duringConversation ||
+        step == GuidanceStep.reminder) {
+      countdownTimer = CountdownTimerText(
+          duration: remainingTime,
+          remindThreshold: remindThreshold,
+          onRemindThresholdReached: () {
+            setState(() {
+              step = GuidanceStep.reminder;
+            });
+          },
+          onTimerEnd: () {
+            setState(() {
+              step = GuidanceStep.rating;
+            });
+          });
+    } else {
+      countdownTimer = const SizedBox();
+    }
+
     if (step == GuidanceStep.rating) {
       bottomChild = Column(children: [
         GreyButton(
             width: 200,
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                step = GuidanceStep.ending;
+              });
+            },
             child: const Text(
               '評価する',
               style: TextStyle(
@@ -188,7 +193,33 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
             style: TextStyle(fontSize: FontSize.small, color: Colors.white))
       ]);
     } else if (step == GuidanceStep.ending) {
-      bottomChild = const SizedBox(height: 1);
+      bottomChild = Row(children: [
+        Expanded(
+            flex: 3,
+            child: GreyButton(
+                onPressed: () {
+                  context.router.pop(RouterKey.dateEnded);
+                },
+                child: const Text('終了する',
+                    style: TextStyle(
+                        fontSize: FontSize.large,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white)))),
+        const SizedBox(width: 10.0),
+        Expanded(
+            flex: 6,
+            child: GreyButton(
+                onPressed: () {
+                  context.router.pop();
+                },
+                child: const Text(
+                  '1on1を続ける',
+                  style: TextStyle(
+                      fontSize: FontSize.large,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )))
+      ]);
     } else {
       bottomChild = const Column(children: [
         UserSoundWave(),
@@ -198,10 +229,10 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
     }
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        topChild,
         centerChild,
+        countdownTimer,
         SafeArea(top: false, child: bottomChild)
       ],
     );
