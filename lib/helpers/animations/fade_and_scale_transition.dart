@@ -22,7 +22,7 @@ class _FadeAndScaleAnimationState extends State<FadeAndScaleAnimation>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
     );
 
     _opacityAnimation = Tween<double>(

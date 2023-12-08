@@ -19,7 +19,7 @@ class VoiceChannelView extends StatefulWidget {
 
 class _VoiceChannelViewState extends State<VoiceChannelView> {
   int uid = 0; // uid of the local user
-  GuidanceStep step = GuidanceStep.duringConversation;
+  GuidanceStep step = GuidanceStep.rating;
   Duration remainingTime = const Duration(seconds: 10);
   Duration remindThreshold = const Duration(seconds: 5);
 

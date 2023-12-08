@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:sample/helpers/animations/fade_and_scale_transition.dart';
 import 'package:sample/helpers/theme/sizes.dart';
+import 'package:sample/helpers/widgets/rating_bar.dart';
 
 enum GuidanceStep {
   waiting,
@@ -141,21 +141,17 @@ class RatingGuidance extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 30.0),
-      RatingBar(
-        ratingWidget: RatingWidget(
-            empty: const Icon(
-              Icons.star_outlined,
-              color: Colors.amber,
-            ),
-            half: const Icon(Icons.star_half, color: Colors.amber),
-            full: const Icon(Icons.star, color: Colors.amber)),
-        onRatingUpdate: onRatingUpdate,
-        initialRating: 3,
-        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      CustomRatingBar(
+        maxRating: 5,
         minRating: 1,
-        allowHalfRating: true,
-        updateOnDrag: true,
-      ),
+        initialRating: 3,
+        itemSize: 40.0,
+        ratedIcon: Icons.star,
+        unratedIcon: Icons.star_border,
+        ratedColor: Colors.amber,
+        unratedColor: Colors.white,
+        onRatingUpdate: onRatingUpdate,
+      )
     ]);
   }
 }
