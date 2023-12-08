@@ -14,7 +14,7 @@ class CountdownTimerText extends StatefulWidget {
 
   final Duration duration;
   final Function onTimerEnd;
-  final Duration? remindThreshold;
+  final Duration remindThreshold;
   final Function onRemindThresholdReached;
 
   @override
@@ -51,10 +51,8 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
       setState(() {
         _remainingTime = Duration(seconds: _start - duration.elapsed.inSeconds);
       });
-      if (widget.remindThreshold != null &&
-          _remainingTime == widget.remindThreshold) {
+      if (_remainingTime == widget.remindThreshold) {
         widget.onRemindThresholdReached();
-        sub.cancel();
       }
     });
 
@@ -66,17 +64,17 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
 
   @override
   Widget build(BuildContext context) {
-    int minutes = _remainingTime.inMinutes;
-    int seconds = _remainingTime.inSeconds % 60;
+    final minutes =
+        _remainingTime.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds =
+        _remainingTime.inSeconds.remainder(60).toString().padLeft(2, '0');
 
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       const Text(
         '残り時間：',
         style: TextStyle(color: Colors.white),
       ),
-      if (_remainingTime
-              .compareTo(widget.remindThreshold ?? const Duration(seconds: 0)) <
-          0)
+      if (_remainingTime.compareTo(widget.remindThreshold) <= 0)
         OutlinedText(
           text: '$minutes:$seconds',
           fontWeight: FontWeight.bold,

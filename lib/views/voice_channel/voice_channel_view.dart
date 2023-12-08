@@ -21,7 +21,7 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
   int uid = 0; // uid of the local user
   GuidanceStep step = GuidanceStep.duringConversation;
   Duration remainingTime = const Duration(seconds: 10);
-  Duration? remindThreshold = const Duration(seconds: 5);
+  Duration remindThreshold = const Duration(seconds: 5);
 
   late RtcEngine agoraEngine;
 
@@ -65,7 +65,7 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  height: 500,
+                  height: 450,
                   width: double.maxFinite,
                   color: Colors.black.withOpacity(0.5),
                   child: Padding(
@@ -142,8 +142,6 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
           remindThreshold: remindThreshold,
           onRemindThresholdReached: () {
             setState(() {
-              remainingTime = remindThreshold ?? const Duration(seconds: 0);
-              remindThreshold = null;
               step = GuidanceStep.reminder;
             });
           },

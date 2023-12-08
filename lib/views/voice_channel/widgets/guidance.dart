@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:sample/helpers/animations/fade_and_scale_transition.dart';
 import 'package:sample/helpers/theme/sizes.dart';
 
 enum GuidanceStep {
@@ -52,68 +53,30 @@ class WaitingGuidance extends StatelessWidget {
   }
 }
 
-class BeginningGuidance extends StatefulWidget {
+class BeginningGuidance extends StatelessWidget {
   const BeginningGuidance({Key? key}) : super(key: key);
 
   @override
-  _BeginningGuidanceState createState() => _BeginningGuidanceState();
-}
-
-class _BeginningGuidanceState extends State<BeginningGuidance>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-
-    _animation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _controller.forward();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-        position: _animation,
-        child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'まもなく\n1on1が開始します',
-                style: TextStyle(
-                  fontSize: FontSize.large,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 30.0),
-              SizedBox(
-                  height: 70.0,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.ballSpinFadeLoader,
-                    colors: [Colors.white],
-                  ))
-            ]));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    return const FadeAndScaleAnimation(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(
+        'まもなく\n1on1が開始します',
+        style: TextStyle(
+          fontSize: FontSize.large,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 30.0),
+      SizedBox(
+          height: 70.0,
+          child: LoadingIndicator(
+            indicatorType: Indicator.ballSpinFadeLoader,
+            colors: [Colors.white],
+          ))
+    ]));
   }
 }
 
@@ -138,61 +101,25 @@ class DuringConversationGuidance extends StatelessWidget {
   }
 }
 
-class ReminderGuidance extends StatefulWidget {
+class ReminderGuidance extends StatelessWidget {
   const ReminderGuidance({super.key});
 
   @override
-  State<ReminderGuidance> createState() => _ReminderGuidanceState();
-}
-
-class _ReminderGuidanceState extends State<ReminderGuidance>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-
-    _animation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _controller.forward();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-        position: _animation,
+    return FadeAndScaleAnimation(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text(
-            '残り時間、\n1on1を楽しみましょう',
-            style: TextStyle(
-              fontSize: FontSize.large,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 30.0),
-          TopicRow(topics: suggestedTopics['end']!)
-        ]));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+      const Text(
+        '残り時間、\n1on1を楽しみましょう',
+        style: TextStyle(
+          fontSize: FontSize.large,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 30.0),
+      TopicRow(topics: suggestedTopics['end']!)
+    ]));
   }
 }
 
