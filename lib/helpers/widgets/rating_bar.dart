@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sample/helpers/theme/sizes.dart';
 
 class CustomRatingBar extends StatefulWidget {
   const CustomRatingBar({
+    super.key,
     this.maxRating = 5,
     this.minRating = 0,
     required this.initialRating,
@@ -40,25 +42,41 @@ class _CustomRatingBarState extends State<CustomRatingBar> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
         widget.maxRating,
         (index) => InkWell(
           onTap: () {
-            double newRating = (index + widget.minRating).toDouble();
+            double newRating = ((index + 1) + widget.minRating).toDouble();
             setState(() {
               rating = newRating;
             });
             widget.onRatingUpdate(newRating);
           },
-          child: Icon(
-            index + widget.minRating <= rating
-                ? widget.ratedIcon
-                : widget.unratedIcon,
-            size: widget.itemSize,
-            color: index + widget.minRating <= rating
-                ? widget.ratedColor
-                : widget.unratedColor,
-          ),
+          child: Column(children: [
+            Icon(
+              (index + 1) + widget.minRating <= rating
+                  ? widget.ratedIcon
+                  : widget.unratedIcon,
+              size: widget.itemSize,
+              color: (index + 1) + widget.minRating <= rating
+                  ? widget.ratedColor
+                  : widget.unratedColor,
+            ),
+            const SizedBox(height: 5.0),
+            if (index == 0)
+              Text(
+                '良くない',
+                style: TextStyle(
+                    fontSize: FontSize.small, color: widget.unratedColor),
+              ),
+            if (index + 1 == widget.maxRating)
+              Text(
+                '良い',
+                style: TextStyle(
+                    fontSize: FontSize.small, color: widget.unratedColor),
+              ),
+          ]),
         ),
       ),
     );
