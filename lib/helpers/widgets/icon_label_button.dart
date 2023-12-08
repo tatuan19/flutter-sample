@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/theme/size.dart';
+import 'package:sample/helpers/theme/sizes.dart';
 
 class IconLabelButton extends StatelessWidget {
   final IconData icon;

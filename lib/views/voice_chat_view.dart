@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sample/helpers/theme/size.dart';
+import 'package:sample/helpers/theme/sizes.dart';
 import 'package:sample/helpers/widgets/icon_label_button.dart';
 import 'package:sample/helpers/widgets/outlined_text.dart';
 import 'package:sample/helpers/widgets/sound_wave.dart';
