@@ -59,7 +59,7 @@ class _CalllViewState extends State<CalllView> {
 
     // Enables the audioVolumeIndication
     await _agoraEngine.enableAudioVolumeIndication(
-        interval: 250, smooth: 3, reportVad: true);
+        interval: 250, smooth: 8, reportVad: true);
 
     // Register the event handler
     _agoraEngine.registerEventHandler(RtcEngineEventHandler(
