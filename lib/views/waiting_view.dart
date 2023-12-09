@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/theme/sizes.dart';
+import 'package:sample/helpers/widgets/scroll_arrow_button.dart';
 import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/views/routes/app_router.gr.dart';
 import 'package:sample/views/routes/router_key.dart';
@@ -18,6 +19,15 @@ class _WaitingViewState extends State<WaitingView> {
   final ScrollController _scrollController = ScrollController();
 
   bool dateEnded = false;
+  bool shouldScrollDown = true;
+
+  void scrollToTop() {
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
+      duration: const Duration(seconds: 1),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -68,15 +78,13 @@ class _WaitingViewState extends State<WaitingView> {
                       child: Stack(children: [
                     Align(
                       alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        onPressed: () {
-                          scrollToBottom();
-                        },
-                        iconSize: 60.0,
-                        color: Colors.white,
-                        highlightColor: Colors.transparent,
-                      ),
+                      child: ScrollArrowButton(
+                          onPressed: () {
+                            shouldScrollDown ? scrollToBottom() : scrollToTop();
+                            shouldScrollDown = !shouldScrollDown;
+                          },
+                          size: 80.0,
+                          color: Colors.white),
                     ),
                     const Align(
                         alignment: Alignment.center,
