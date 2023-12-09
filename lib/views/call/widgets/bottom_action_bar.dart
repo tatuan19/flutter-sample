@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sample/helpers/widgets/icon_label_button.dart';
 
 class BottomActionBar extends StatelessWidget {
-  const BottomActionBar(
-      {super.key,
-      required this.onToggleMute,
-      required this.onToggleSpeaker,
-      required this.muted,
-      required this.speakerOff});
+  const BottomActionBar({
+    super.key,
+    required this.onToggleMute,
+    required this.onToggleSpeaker,
+    required this.muted,
+    required this.speakerOff,
+  });
 
   final bool muted;
   final bool speakerOff;

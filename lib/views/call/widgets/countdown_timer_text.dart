@@ -69,26 +69,29 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
     final seconds =
         _remainingTime.inSeconds.remainder(60).toString().padLeft(2, '0');
 
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      const Text(
-        '残り時間：',
-        style: TextStyle(color: Colors.white),
-      ),
-      if (_remainingTime.compareTo(widget.remindThreshold) <= 0)
-        OutlinedText(
-          text: '$minutes:$seconds',
-          fontWeight: FontWeight.bold,
-          textColor: Colors.white,
-          borderColor: Colors.red,
-        )
-      else
-        Text(
-          '$minutes:$seconds',
-          style: const TextStyle(
-              fontSize: FontSize.small,
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
-        )
-    ]);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          '残り時間：',
+          style: TextStyle(color: Colors.white),
+        ),
+        if (_remainingTime.compareTo(widget.remindThreshold) <= 0)
+          OutlinedText(
+            text: '$minutes:$seconds',
+            fontWeight: FontWeight.bold,
+            textColor: Colors.white,
+            borderColor: Colors.red,
+          )
+        else
+          Text(
+            '$minutes:$seconds',
+            style: const TextStyle(
+                fontSize: FontSize.small,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+          )
+      ],
+    );
   }
 }

@@ -92,51 +92,54 @@ class _WaitingViewState extends State<WaitingView> {
                     Align(
                         alignment: Alignment.bottomCenter,
                         child: !dateEnded
-                            ? Column(mainAxisSize: MainAxisSize.min, children: [
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20.0),
-                                    child: GreyButton(
-                                      height: ButtonHeight.large,
-                                      onPressed: () async {
-                                        final result = await context.router
-                                            .push(const CalllRoute());
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 20.0),
+                                      child: GreyButton(
+                                        height: ButtonHeight.large,
+                                        onPressed: () async {
+                                          final result = await context.router
+                                              .push(const CalllRoute());
 
-                                        if (result != null &&
-                                            result == RouterKey.dateEnded) {
-                                          setState(() {
-                                            dateEnded = true;
-                                          });
-                                        }
-                                      },
-                                      child: const Text(
-                                        '説明をスキップする',
+                                          if (result != null &&
+                                              result == RouterKey.dateEnded) {
+                                            setState(() {
+                                              dateEnded = true;
+                                            });
+                                          }
+                                        },
+                                        child: const Text(
+                                          '説明をスキップする',
+                                          style: TextStyle(
+                                            fontSize: FontSize.large,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      )),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: false,
+                                        onChanged: (value) {},
+                                        side: const BorderSide(
+                                            color: Colors.white, width: 2.0),
+                                      ),
+                                      const Text(
+                                        '今後もスキップする（後で設定画面から変更できます）',
                                         style: TextStyle(
-                                          fontSize: FontSize.large,
-                                          fontWeight: FontWeight.bold,
                                           color: Colors.white,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    )),
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (value) {},
-                                      side: const BorderSide(
-                                          color: Colors.white, width: 2.0),
-                                    ),
-                                    const Text(
-                                      '今後もスキップする（後で設定画面から変更できます）',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: FontSize.small,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ])
+                                    ],
+                                  )
+                                ],
+                              )
                             : const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 100),
                                 child: Text('THANK YOU!',

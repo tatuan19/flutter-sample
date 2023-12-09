@@ -21,38 +21,41 @@ class WaitingGuidance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeAndScaleAnimation(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text(
-        'ただ今待機中です',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'ただ今待機中です',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-      ),
-      const SizedBox(height: 30.0),
-      Text(
-        '待ち時間：約${waitingNumber * 3}分',
-        style: const TextStyle(
-          color: Colors.white,
+        const SizedBox(height: 30.0),
+        Text(
+          '待ち時間：約${waitingNumber * 3}分',
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
-      ),
-      Text(
-        '待ち人数：男性$waitingNumber名待ち',
-        style: const TextStyle(
-          color: Colors.white,
+        Text(
+          '待ち人数：男性$waitingNumber名待ち',
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
-      ),
-      const SizedBox(height: 30.0),
-      Text(
-        'お客様は$waitingNumber番目にご案内いたします',
-        style: const TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      )
-    ]));
+        const SizedBox(height: 30.0),
+        Text(
+          'お客様は$waitingNumber番目にご案内いたします',
+          style: const TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        )
+      ],
+    ));
   }
 }
 
@@ -61,25 +64,28 @@ class BeginningGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      FadeAndScaleAnimation(
-          child: Text(
-        'まもなく\n1on1が開始します',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        textAlign: TextAlign.center,
-      )),
-      SizedBox(height: 30.0),
-      SizedBox(
-          height: 70.0,
-          child: LoadingIndicator(
-            indicatorType: Indicator.ballSpinFadeLoader,
-            colors: [Colors.white],
-          ))
-    ]);
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FadeAndScaleAnimation(
+            child: Text(
+          'まもなく\n1on1が開始します',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        )),
+        SizedBox(height: 30.0),
+        SizedBox(
+            height: 70.0,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballSpinFadeLoader,
+              colors: [Colors.white],
+            ))
+      ],
+    );
   }
 }
 
@@ -89,19 +95,22 @@ class DuringConversationGuidance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeAndScaleAnimation(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text(
-        '1on1が開始しました\nまずは自己紹介をしましょう',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          '1on1が開始しました\nまずは自己紹介をしましょう',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,
-      ),
-      const SizedBox(height: 30.0),
-      TopicRow(topics: suggestedTopics['start']!)
-    ]));
+        const SizedBox(height: 30.0),
+        TopicRow(topics: suggestedTopics['start']!)
+      ],
+    ));
   }
 }
 
@@ -111,19 +120,22 @@ class ReminderGuidance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeAndScaleAnimation(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text(
-        '残り時間、\n1on1を楽しみましょう',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          '残り時間、\n1on1を楽しみましょう',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,
-      ),
-      const SizedBox(height: 30.0),
-      TopicRow(topics: suggestedTopics['end']!)
-    ]));
+        const SizedBox(height: 30.0),
+        TopicRow(topics: suggestedTopics['end']!)
+      ],
+    ));
   }
 }
 
@@ -134,28 +146,31 @@ class RatingGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text(
-        '1on1が終了しました\nきなこさんのマナーを評価してください',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          '1on1が終了しました\nきなこさんのマナーを評価してください',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,
-      ),
-      const SizedBox(height: 30.0),
-      CustomRatingBar(
-        maxRating: 5,
-        initialRating: 3,
-        itemSize: 40.0,
-        ratedIcon: Icons.star,
-        unratedIcon: Icons.star_border,
-        ratedColor: Colors.amber,
-        unratedColor: Colors.white,
-        onRatingUpdate: onRatingUpdate,
-      )
-    ]);
+        const SizedBox(height: 30.0),
+        CustomRatingBar(
+          maxRating: 5,
+          initialRating: 3,
+          itemSize: 40.0,
+          ratedIcon: Icons.star,
+          unratedIcon: Icons.star_border,
+          ratedColor: Colors.amber,
+          unratedColor: Colors.white,
+          onRatingUpdate: onRatingUpdate,
+        )
+      ],
+    );
   }
 }
 
@@ -164,30 +179,33 @@ class EndingGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
-        '1on1が終了しました\nこのまま1on1を続けますか？',
-        style: TextStyle(
-          fontSize: FontSize.large,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '1on1が終了しました\nこのまま1on1を続けますか？',
+          style: TextStyle(
+            fontSize: FontSize.large,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: 30.0),
-      Text(
-        '待ち時間：約3分',
-        style: TextStyle(
-          color: Colors.white,
+        SizedBox(height: 30.0),
+        Text(
+          '待ち時間：約3分',
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      ),
-      Text(
-        '待ち人数：男性2名待ち',
-        style: TextStyle(
-          color: Colors.white,
+        Text(
+          '待ち人数：男性2名待ち',
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 

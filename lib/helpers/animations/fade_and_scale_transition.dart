@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class FadeAndScaleAnimation extends StatefulWidget {
-  const FadeAndScaleAnimation(
-      {super.key,
-      required this.child,
-      this.duration = const Duration(seconds: 1)});
+  const FadeAndScaleAnimation({
+    super.key,
+    required this.child,
+    this.duration = const Duration(seconds: 1),
+  });
 
   final Widget child;
   final Duration duration;

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sample/helpers/theme/sizes.dart';
 
 class ScrollArrowButton extends StatefulWidget {
-  const ScrollArrowButton(
-      {super.key,
-      required this.onPressed,
-      this.color,
-      this.size = ButtonHeight.medium});
+  const ScrollArrowButton({
+    super.key,
+    required this.onPressed,
+    this.color,
+    this.size = ButtonHeight.medium,
+  });
 
   final VoidCallback onPressed;
   final double size;

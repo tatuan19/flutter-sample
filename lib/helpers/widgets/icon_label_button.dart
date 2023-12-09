@@ -31,6 +31,7 @@ class IconLabelButton extends StatelessWidget {
           onPressed: onPressed,
           iconSize: iconSize,
           color: buttonColor,
+          highlightColor: Colors.transparent,
         ),
         Text(
           label,

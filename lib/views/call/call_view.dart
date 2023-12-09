@@ -32,7 +32,7 @@ class _CalllViewState extends State<CalllView> {
   bool _hasVoiceCome = false;
   GuidanceStep _step = GuidanceStep.waiting;
 
-  final remainingTime = const Duration(seconds: 10);
+  final remainingTime = const Duration(seconds: 100);
   final remindThreshold = const Duration(seconds: 5);
 
   @override
@@ -46,6 +46,73 @@ class _CalllViewState extends State<CalllView> {
             });
 
     waitForMyTurn();
+  }
+
+  Future<void> setupVoiceSDKEngine() async {
+    // Retrieve or request microphone permission
+    await [Permission.microphone].request();
+
+    // Create an instance of the Agora engine
+    _agoraEngine = createAgoraRtcEngine();
+    await _agoraEngine.initialize(
+        const RtcEngineContext(appId: "f3de06bbd5204c9ea642ae7e8516394e"));
+
+    // Enables the audioVolumeIndication
+    await _agoraEngine.enableAudioVolumeIndication(
+        interval: 250, smooth: 3, reportVad: true);
+
+    // Register the event handler
+    _agoraEngine.registerEventHandler(RtcEngineEventHandler(
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          setState(() {
+            _step = GuidanceStep.waiting;
+          });
+        },
+        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+          setState(() {
+            _step = GuidanceStep.duringConversation;
+          });
+        },
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
+          setState(() {
+            _agoraEngine.leaveChannel();
+            _step = GuidanceStep.rating;
+          });
+        },
+        onAudioVolumeIndication: (
+          RtcConnection connection,
+          List<AudioVolumeInfo> speakers,
+          int speakerNumber,
+          int totalVolume,
+        ) {
+          setState(() {
+            _hasVoiceCome = speakers.any((speaker) => speaker.vad == 1);
+          });
+        },
+        onError: (err, msg) => {
+              devtools.log(err.toString()),
+              devtools.log(msg.toString()),
+            }));
+  }
+
+  void joinChannel() async {
+    ChannelMediaOptions options = const ChannelMediaOptions(
+      clientRoleType: ClientRoleType.clientRoleBroadcaster,
+      channelProfile: ChannelProfileType.channelProfileCommunication,
+    );
+
+    try {
+      await _agoraEngine.joinChannel(
+        token:
+            "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==",
+        channelId: "test",
+        options: options,
+        uid: uid,
+      );
+    } catch (e) {
+      devtools.log(e.toString());
+    }
   }
 
   void waitForMyTurn() {
@@ -101,96 +168,25 @@ class _CalllViewState extends State<CalllView> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 450,
-                  width: double.maxFinite,
-                  color: Colors.black.withOpacity(0.5),
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
-                      child: _buidGuidedance()),
-                )),
-          ]),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 450,
+                    width: double.maxFinite,
+                    color: Colors.black.withOpacity(0.5),
+                    child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
+                        child: _guidedance()),
+                  )),
+            ],
+          ),
         ));
   }
 
-  Future<void> setupVoiceSDKEngine() async {
-    // Retrieve or request microphone permission
-    await [Permission.microphone].request();
-
-    // Create an instance of the Agora engine
-    _agoraEngine = createAgoraRtcEngine();
-    await _agoraEngine.initialize(
-        const RtcEngineContext(appId: "f3de06bbd5204c9ea642ae7e8516394e"));
-
-    // Enables the audioVolumeIndication
-    await _agoraEngine.enableAudioVolumeIndication(
-        interval: 250, smooth: 3, reportVad: true);
-
-    // Register the event handler
-    _agoraEngine.registerEventHandler(RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          setState(() {
-            _step = GuidanceStep.waiting;
-          });
-        },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
-          setState(() {
-            _step = GuidanceStep.duringConversation;
-          });
-        },
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
-          setState(() {
-            _step = GuidanceStep.rating;
-          });
-        },
-        onAudioVolumeIndication: (
-          RtcConnection connection,
-          List<AudioVolumeInfo> speakers,
-          int speakerNumber,
-          int totalVolume,
-        ) {
-          if (speakerNumber > 0) {
-            devtools.log(speakers.toString());
-
-            setState(() {
-              _hasVoiceCome = true;
-            });
-          } else {
-            setState(() {
-              _hasVoiceCome = false;
-            });
-          }
-        },
-        onError: (err, msg) => {
-              devtools.log(err.toString()),
-              devtools.log(msg.toString()),
-            }));
-  }
-
-  void joinChannel() async {
-    ChannelMediaOptions options = const ChannelMediaOptions(
-      clientRoleType: ClientRoleType.clientRoleBroadcaster,
-      channelProfile: ChannelProfileType.channelProfileCommunication,
-    );
-
-    try {
-      await _agoraEngine.joinChannel(
-        token:
-            "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==",
-        channelId: "test",
-        options: options,
-        uid: uid,
-      );
-    } catch (e) {
-      devtools.log(e.toString());
-    }
-  }
-
-  Widget _buidGuidedance() {
+  Widget _guidedance() {
     Widget centerChild;
     Widget countdownTimer;
     Widget bottomChild;
