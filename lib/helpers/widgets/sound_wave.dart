@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class SoundWave extends StatelessWidget {
-  const SoundWave({super.key, hasSound});
+  const SoundWave({super.key, required this.hasVoiceCome});
 
-  final bool isTalking = true;
+  final bool hasVoiceCome;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class SoundWave extends StatelessWidget {
             child: LoadingIndicator(
               indicatorType: Indicator.lineScalePulseOutRapid,
               colors: soundWaveColors.sublist(index * 5, (index + 1) * 5),
-              pause: !isTalking,
+              pause: !hasVoiceCome,
             ),
           );
         },

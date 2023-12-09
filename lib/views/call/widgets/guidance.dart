@@ -14,12 +14,15 @@ enum GuidanceStep {
 }
 
 class WaitingGuidance extends StatelessWidget {
-  const WaitingGuidance({super.key});
+  const WaitingGuidance({super.key, required this.waitingNumber});
+
+  final int waitingNumber;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
+    return FadeAndScaleAnimation(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      const Text(
         'ただ今待機中です',
         style: TextStyle(
           fontSize: FontSize.large,
@@ -27,29 +30,29 @@ class WaitingGuidance extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      SizedBox(height: 30.0),
+      const SizedBox(height: 30.0),
       Text(
-        '待ち時間：約3分',
-        style: TextStyle(
+        '待ち時間：約${waitingNumber * 3}分',
+        style: const TextStyle(
           color: Colors.white,
         ),
       ),
       Text(
-        '待ち人数：男性2名待ち',
-        style: TextStyle(
+        '待ち人数：男性$waitingNumber名待ち',
+        style: const TextStyle(
           color: Colors.white,
         ),
       ),
-      SizedBox(height: 30.0),
+      const SizedBox(height: 30.0),
       Text(
-        'お客様は2番目にご案内いたします',
-        style: TextStyle(
+        'お客様は$waitingNumber番目にご案内いたします',
+        style: const TextStyle(
           fontSize: FontSize.large,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
       )
-    ]);
+    ]));
   }
 }
 
@@ -58,9 +61,9 @@ class BeginningGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const FadeAndScaleAnimation(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
+    return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      FadeAndScaleAnimation(
+          child: Text(
         'まもなく\n1on1が開始します',
         style: TextStyle(
           fontSize: FontSize.large,
@@ -68,7 +71,7 @@ class BeginningGuidance extends StatelessWidget {
           color: Colors.white,
         ),
         textAlign: TextAlign.center,
-      ),
+      )),
       SizedBox(height: 30.0),
       SizedBox(
           height: 70.0,
@@ -76,7 +79,7 @@ class BeginningGuidance extends StatelessWidget {
             indicatorType: Indicator.ballSpinFadeLoader,
             colors: [Colors.white],
           ))
-    ]));
+    ]);
   }
 }
 
@@ -85,7 +88,8 @@ class DuringConversationGuidance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return FadeAndScaleAnimation(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       const Text(
         '1on1が開始しました\nまずは自己紹介をしましょう',
         style: TextStyle(
@@ -97,7 +101,7 @@ class DuringConversationGuidance extends StatelessWidget {
       ),
       const SizedBox(height: 30.0),
       TopicRow(topics: suggestedTopics['start']!)
-    ]);
+    ]));
   }
 }
 

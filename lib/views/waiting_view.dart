@@ -100,7 +100,7 @@ class _WaitingViewState extends State<WaitingView> {
                                       height: ButtonHeight.large,
                                       onPressed: () async {
                                         final result = await context.router
-                                            .push(const VoiceChatRoute());
+                                            .push(const CalllRoute());
 
                                         if (result != null &&
                                             result == RouterKey.dateEnded) {

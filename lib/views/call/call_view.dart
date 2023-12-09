@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -6,36 +8,73 @@ import 'package:sample/helpers/theme/sizes.dart';
 import 'package:sample/helpers/widgets/grey_button.dart';
 import 'package:sample/helpers/widgets/sound_wave.dart';
 import 'package:sample/views/routes/router_key.dart';
-import 'package:sample/views/voice_channel/widgets/bottom_action_bar.dart';
-import 'package:sample/views/voice_channel/widgets/countdown_timer_text.dart';
-import 'package:sample/views/voice_channel/widgets/guidance.dart';
+import 'package:sample/views/call/widgets/bottom_action_bar.dart';
+import 'package:sample/views/call/widgets/countdown_timer_text.dart';
+import 'package:sample/views/call/widgets/guidance.dart';
+
+import 'dart:developer' as devtools show log;
 
 @RoutePage()
-class VoiceChannelView extends StatefulWidget {
-  const VoiceChannelView({super.key});
+class CalllView extends StatefulWidget {
+  const CalllView({super.key});
 
   @override
-  State<VoiceChannelView> createState() => _VoiceChannelViewState();
+  State<CalllView> createState() => _CalllViewState();
 }
 
-class _VoiceChannelViewState extends State<VoiceChannelView> {
-  int uid = 0; // uid of the local user
-  GuidanceStep step = GuidanceStep.duringConversation;
-  Duration remainingTime = const Duration(seconds: 10);
-  Duration remindThreshold = const Duration(seconds: 5);
+class _CalllViewState extends State<CalllView> {
+  late RtcEngine _agoraEngine;
 
-  late RtcEngine agoraEngine;
+  int uid = 0; // uid of the local user
+  int _waitingNumber = 2;
+  bool _muted = false;
+  bool _speakerOff = false;
+  bool _hasVoiceCome = false;
+  GuidanceStep _step = GuidanceStep.waiting;
+
+  final remainingTime = const Duration(seconds: 10);
+  final remindThreshold = const Duration(seconds: 5);
 
   @override
   void initState() {
     super.initState();
-    setupVoiceSDKEngine();
+    setupVoiceSDKEngine()
+        .whenComplete(() => joinChannel())
+        .onError((error, stackTrace) => {
+              devtools.log(error.toString()),
+              devtools.log(stackTrace.toString()),
+            });
+
+    waitForMyTurn();
   }
 
-  @override
-  void dispose() async {
-    super.dispose();
-    await agoraEngine.leaveChannel();
+  void waitForMyTurn() {
+    Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (_waitingNumber == 0) {
+        timer.cancel();
+        setState(() {
+          _step = GuidanceStep.beginning;
+        });
+      } else {
+        setState(() {
+          --_waitingNumber;
+        });
+      }
+    });
+  }
+
+  void _onToggleMute() {
+    setState(() {
+      _muted = !_muted;
+    });
+    _agoraEngine.muteLocalAudioStream(_muted);
+  }
+
+  void _onToggerSpeaker() {
+    setState(() {
+      _speakerOff = !_speakerOff;
+    });
+    _agoraEngine.setEnableSpeakerphone(!_speakerOff);
   }
 
   @override
@@ -71,42 +110,65 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
                   color: Colors.black.withOpacity(0.5),
                   child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 40, 10, 0),
-                      child: _guidedance()),
+                      child: _buidGuidedance()),
                 )),
           ]),
         ));
   }
 
   Future<void> setupVoiceSDKEngine() async {
-    // retrieve or request microphone permission
+    // Retrieve or request microphone permission
     await [Permission.microphone].request();
 
-    //create an instance of the Agora engine
-    agoraEngine = createAgoraRtcEngine();
-    await agoraEngine.initialize(
+    // Create an instance of the Agora engine
+    _agoraEngine = createAgoraRtcEngine();
+    await _agoraEngine.initialize(
         const RtcEngineContext(appId: "f3de06bbd5204c9ea642ae7e8516394e"));
 
+    // Enables the audioVolumeIndication
+    await _agoraEngine.enableAudioVolumeIndication(
+        interval: 250, smooth: 3, reportVad: true);
+
     // Register the event handler
-    agoraEngine.registerEventHandler(
-      RtcEngineEventHandler(
+    _agoraEngine.registerEventHandler(RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           setState(() {
-            step = GuidanceStep.waiting;
+            _step = GuidanceStep.waiting;
           });
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           setState(() {
-            step = GuidanceStep.beginning;
+            _step = GuidanceStep.duringConversation;
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           setState(() {
-            step = GuidanceStep.ending;
+            _step = GuidanceStep.rating;
           });
         },
-      ),
-    );
+        onAudioVolumeIndication: (
+          RtcConnection connection,
+          List<AudioVolumeInfo> speakers,
+          int speakerNumber,
+          int totalVolume,
+        ) {
+          if (speakerNumber > 0) {
+            devtools.log(speakers.toString());
+
+            setState(() {
+              _hasVoiceCome = true;
+            });
+          } else {
+            setState(() {
+              _hasVoiceCome = false;
+            });
+          }
+        },
+        onError: (err, msg) => {
+              devtools.log(err.toString()),
+              devtools.log(msg.toString()),
+            }));
   }
 
   void joinChannel() async {
@@ -115,30 +177,27 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
 
-    await agoraEngine.joinChannel(
-      token:
-          "007eJxTYGA0W97P6Z0aYfs/v9RNVt47KMOqPv6fnIx2yb8t849Jz1dgSDNOSTUwS0pKMTUyMEm2TE00MzFKTDVPtTA1NDO2NEk1yC5MbQhkZFA7foiFkQECQXwWhpLU4hIGBgBaJByq",
-      channelId: "test",
-      options: options,
-      uid: uid,
-    );
+    try {
+      await _agoraEngine.joinChannel(
+        token:
+            "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==",
+        channelId: "test",
+        options: options,
+        uid: uid,
+      );
+    } catch (e) {
+      devtools.log(e.toString());
+    }
   }
 
-  void leave() {
-    setState(() {
-      step = GuidanceStep.ending;
-    });
-    agoraEngine.leaveChannel();
-  }
-
-  Widget _guidedance() {
+  Widget _buidGuidedance() {
     Widget centerChild;
     Widget countdownTimer;
     Widget bottomChild;
 
-    switch (step) {
+    switch (_step) {
       case GuidanceStep.waiting:
-        centerChild = const WaitingGuidance();
+        centerChild = WaitingGuidance(waitingNumber: _waitingNumber);
       case GuidanceStep.beginning:
         centerChild = const BeginningGuidance();
       case GuidanceStep.duringConversation:
@@ -150,35 +209,36 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
       case GuidanceStep.ending:
         centerChild = const EndingGuidance();
       default:
-        centerChild = const WaitingGuidance();
+        centerChild = WaitingGuidance(waitingNumber: _waitingNumber);
     }
 
-    if (step == GuidanceStep.duringConversation ||
-        step == GuidanceStep.reminder) {
+    if (_step == GuidanceStep.duringConversation ||
+        _step == GuidanceStep.reminder) {
       countdownTimer = CountdownTimerText(
           duration: remainingTime,
           remindThreshold: remindThreshold,
           onRemindThresholdReached: () {
             setState(() {
-              step = GuidanceStep.reminder;
+              _step = GuidanceStep.reminder;
             });
           },
           onTimerEnd: () {
             setState(() {
-              step = GuidanceStep.rating;
+              _agoraEngine.leaveChannel();
+              _step = GuidanceStep.rating;
             });
           });
     } else {
       countdownTimer = const SizedBox();
     }
 
-    if (step == GuidanceStep.rating) {
+    if (_step == GuidanceStep.rating) {
       bottomChild = Column(children: [
         GreyButton(
             width: 200,
             onPressed: () {
               setState(() {
-                step = GuidanceStep.ending;
+                _step = GuidanceStep.ending;
               });
             },
             child: const Text(
@@ -192,7 +252,7 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
         const Text('自分がつけた評価は、相手には分かりません。',
             style: TextStyle(fontSize: FontSize.small, color: Colors.white))
       ]);
-    } else if (step == GuidanceStep.ending) {
+    } else if (_step == GuidanceStep.ending) {
       bottomChild = Row(children: [
         Expanded(
             flex: 3,
@@ -221,10 +281,14 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
                 )))
       ]);
     } else {
-      bottomChild = const Column(children: [
-        UserSoundWave(),
-        SizedBox(height: 30.0),
-        BottomActionBar()
+      bottomChild = Column(children: [
+        UserSoundWave(hasVoiceCome: _hasVoiceCome),
+        const SizedBox(height: 30.0),
+        BottomActionBar(
+            muted: _muted,
+            speakerOff: _speakerOff,
+            onToggleMute: _onToggleMute,
+            onToggleSpeaker: _onToggerSpeaker)
       ]);
     }
 
@@ -237,22 +301,30 @@ class _VoiceChannelViewState extends State<VoiceChannelView> {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _agoraEngine.leaveChannel();
+  }
 }
 
 class UserSoundWave extends StatelessWidget {
-  const UserSoundWave({super.key});
+  const UserSoundWave({super.key, required this.hasVoiceCome});
+
+  final bool hasVoiceCome;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CircleAvatar(
+        const CircleAvatar(
           radius: 20,
           backgroundImage: AssetImage('assets/my_avatar.png'),
         ),
-        SizedBox(height: 60.0, child: SoundWave()),
-        CircleAvatar(
+        SizedBox(height: 60.0, child: SoundWave(hasVoiceCome: hasVoiceCome)),
+        const CircleAvatar(
           radius: 20,
           backgroundImage: AssetImage('assets/sample_avatar.png'),
         )

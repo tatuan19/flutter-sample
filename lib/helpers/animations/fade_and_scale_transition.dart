@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 class FadeAndScaleAnimation extends StatefulWidget {
-  final Widget child;
+  const FadeAndScaleAnimation(
+      {super.key,
+      required this.child,
+      this.duration = const Duration(seconds: 1)});
 
-  const FadeAndScaleAnimation({Key? key, required this.child})
-      : super(key: key);
+  final Widget child;
+  final Duration duration;
 
   @override
   _FadeAndScaleAnimationState createState() => _FadeAndScaleAnimationState();
@@ -22,7 +25,7 @@ class _FadeAndScaleAnimationState extends State<FadeAndScaleAnimation>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: widget.duration,
     );
 
     _opacityAnimation = Tween<double>(
