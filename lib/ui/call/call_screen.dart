@@ -53,50 +53,54 @@ class _CallScreenState extends State<CallScreen> {
   }
 
   Future<void> setupVoiceSDKEngine() async {
-    // Retrieve or request microphone permission
-    await [Permission.microphone].request();
+    try {
+      // Retrieve or request microphone permission
+      await [Permission.microphone].request();
 
-    // Create an instance of the Agora engine
-    _agoraEngine = createAgoraRtcEngine();
-    await _agoraEngine.initialize(RtcEngineContext(appId: appId));
+      // Create an instance of the Agora engine
+      _agoraEngine = createAgoraRtcEngine();
+      await _agoraEngine.initialize(RtcEngineContext(appId: appId));
 
-    // Enables the audioVolumeIndication
-    await _agoraEngine.enableAudioVolumeIndication(
-        interval: 250, smooth: 8, reportVad: true);
+      // Enables the audioVolumeIndication
+      await _agoraEngine.enableAudioVolumeIndication(
+          interval: 250, smooth: 8, reportVad: true);
 
-    // Register the event handler
-    _agoraEngine.registerEventHandler(RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          setState(() {
-            _step = GuidanceStep.waiting;
-          });
-        },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
-          setState(() {
-            _step = GuidanceStep.duringConversation;
-          });
-        },
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
-          setState(() {
-            _agoraEngine.leaveChannel();
-            _step = GuidanceStep.rating;
-          });
-        },
-        onAudioVolumeIndication: (
-          RtcConnection connection,
-          List<AudioVolumeInfo> speakers,
-          int speakerNumber,
-          int totalVolume,
-        ) {
-          setState(() {
-            _hasVoiceCome = speakers.any((speaker) => speaker.vad == 1);
-          });
-        },
-        onError: (err, msg) => {
-              devtools.log(err.toString()),
-              devtools.log(msg.toString()),
-            }));
+      // Register the event handler
+      _agoraEngine.registerEventHandler(RtcEngineEventHandler(
+          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+            setState(() {
+              _step = GuidanceStep.waiting;
+            });
+          },
+          onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+            setState(() {
+              _step = GuidanceStep.duringConversation;
+            });
+          },
+          onUserOffline: (RtcConnection connection, int remoteUid,
+              UserOfflineReasonType reason) {
+            setState(() {
+              _agoraEngine.leaveChannel();
+              _step = GuidanceStep.rating;
+            });
+          },
+          onAudioVolumeIndication: (
+            RtcConnection connection,
+            List<AudioVolumeInfo> speakers,
+            int speakerNumber,
+            int totalVolume,
+          ) {
+            setState(() {
+              _hasVoiceCome = speakers.any((speaker) => speaker.vad == 1);
+            });
+          },
+          onError: (err, msg) => {
+                devtools.log(err.toString()),
+                devtools.log(msg.toString()),
+              }));
+    } catch (err) {
+      devtools.log(err.toString());
+    }
   }
 
   void joinChannel() async {
