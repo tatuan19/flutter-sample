@@ -34,7 +34,7 @@ class _CallScreenState extends State<CallScreen> {
 
   final appId = "f3de06bbd5204c9ea642ae7e8516394e";
   final token =
-      "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==";
+      "007eJxTYJDiNWP9Wh6i+c3cpO5mzOwbTLNtPopGCmQ1fQlb8UZr7gEFhjTjlFQDs6SkFFMjA5Nky9REMxOjxFTzVAtTQzNjS5NUrrqy1IZARoYJ7JUMjFAI4rMwlKQWlzAwAADDtR1/";
   final channelId = "test";
   final remainingTime = const Duration(seconds: 100);
   final remindThreshold = const Duration(seconds: 5);
