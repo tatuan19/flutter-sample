@@ -36,7 +36,7 @@ class _CallScreenState extends State<CallScreen> {
   final token =
       "007eJxTYJDiNWP9Wh6i+c3cpO5mzOwbTLNtPopGCmQ1fQlb8UZr7gEFhjTjlFQDs6SkFFMjA5Nky9REMxOjxFTzVAtTQzNjS5NUrrqy1IZARoYJ7JUMjFAI4rMwlKQWlzAwAADDtR1/";
   final channelId = "test";
-  final remainingTime = const Duration(seconds: 100);
+  final remainingTime = const Duration(seconds: 10);
   final remindThreshold = const Duration(seconds: 5);
 
   @override
