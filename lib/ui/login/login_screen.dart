@@ -3,18 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/firebase_options.dart';
-import 'package:sample/utilities/dialogs/error_dialog.dart';
-import 'package:sample/views/routes/app_router.gr.dart';
+import 'package:sample/common/widgets/dialogs/error_dialog.dart';
+import 'package:sample/ui/router/app_router.gr.dart';
 
 @RoutePage()
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 

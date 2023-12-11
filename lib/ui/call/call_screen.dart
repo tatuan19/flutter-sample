@@ -4,25 +4,25 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/grey_button.dart';
-import 'package:sample/helpers/widgets/sound_wave.dart';
-import 'package:sample/views/routes/router_key.dart';
-import 'package:sample/views/call/widgets/bottom_action_bar.dart';
-import 'package:sample/views/call/widgets/countdown_timer_text.dart';
-import 'package:sample/views/call/widgets/guidance.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/common/widgets/buttons/grey_button.dart';
+import 'package:sample/common/widgets/sound_wave.dart';
+import 'package:sample/ui/call/widgets/bottom_action_bar.dart';
+import 'package:sample/ui/call/widgets/countdown_timer_text.dart';
+import 'package:sample/ui/call/widgets/guidance.dart';
+import 'package:sample/ui/router/router_key.dart';
 
 import 'dart:developer' as devtools show log;
 
 @RoutePage()
-class CalllView extends StatefulWidget {
-  const CalllView({super.key});
+class CallScreen extends StatefulWidget {
+  const CallScreen({super.key});
 
   @override
-  State<CalllView> createState() => _CalllViewState();
+  State<CallScreen> createState() => _CallScreenState();
 }
 
-class _CalllViewState extends State<CalllView> {
+class _CallScreenState extends State<CallScreen> {
   late RtcEngine _agoraEngine;
 
   int uid = 0; // uid of the local user
@@ -32,6 +32,10 @@ class _CalllViewState extends State<CalllView> {
   bool _hasVoiceCome = false;
   GuidanceStep _step = GuidanceStep.waiting;
 
+  final appId = "f3de06bbd5204c9ea642ae7e8516394e";
+  final token =
+      "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==";
+  final channelId = "test";
   final remainingTime = const Duration(seconds: 100);
   final remindThreshold = const Duration(seconds: 5);
 
@@ -54,8 +58,7 @@ class _CalllViewState extends State<CalllView> {
 
     // Create an instance of the Agora engine
     _agoraEngine = createAgoraRtcEngine();
-    await _agoraEngine.initialize(
-        const RtcEngineContext(appId: "f3de06bbd5204c9ea642ae7e8516394e"));
+    await _agoraEngine.initialize(RtcEngineContext(appId: appId));
 
     // Enables the audioVolumeIndication
     await _agoraEngine.enableAudioVolumeIndication(
@@ -104,9 +107,8 @@ class _CalllViewState extends State<CalllView> {
 
     try {
       await _agoraEngine.joinChannel(
-        token:
-            "007eJxTYOgK2DKxiy3dZY7zhZjEOUXKgROu3dn5Z6GasvrxqWe+cL1UYEgzTkk1MEtKSjE1MjBJtkxNNDMxSkw1T7UwNTQztjRJXb6rOLUhkJHhUXoaKyMDBIL4LAwlqcUlDAwAl+kg7Q==",
-        channelId: "test",
+        token: token,
+        channelId: channelId,
         options: options,
         uid: uid,
       );

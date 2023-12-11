@@ -1,21 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/scroll_arrow_button.dart';
-import 'package:sample/helpers/widgets/grey_button.dart';
-import 'package:sample/views/routes/app_router.gr.dart';
-import 'package:sample/views/routes/router_key.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/common/widgets/buttons/scroll_arrow_button.dart';
+import 'package:sample/common/widgets/buttons/grey_button.dart';
+import 'package:sample/ui/router/app_router.gr.dart';
+import 'package:sample/ui/router/router_key.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
-class WaitingView extends StatefulWidget {
-  const WaitingView({super.key});
+class WaitingScreen extends StatefulWidget {
+  const WaitingScreen({super.key});
 
   @override
-  State<WaitingView> createState() => _WaitingViewState();
+  State<WaitingScreen> createState() => _WaitingScreenState();
 }
 
-class _WaitingViewState extends State<WaitingView> {
+class _WaitingScreenState extends State<WaitingScreen> {
   final ScrollController _scrollController = ScrollController();
 
   bool dateEnded = false;
@@ -102,7 +102,7 @@ class _WaitingViewState extends State<WaitingView> {
                                         height: ButtonHeight.large,
                                         onPressed: () async {
                                           final result = await context.router
-                                              .push(const CalllRoute());
+                                              .push(const CallRoute());
 
                                           if (result != null &&
                                               result == RouterKey.dateEnded) {

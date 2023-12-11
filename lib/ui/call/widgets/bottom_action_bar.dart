@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/widgets/icon_label_button.dart';
+import 'package:sample/common/widgets/buttons/icon_label_button.dart';
 
 class BottomActionBar extends StatelessWidget {
   const BottomActionBar({

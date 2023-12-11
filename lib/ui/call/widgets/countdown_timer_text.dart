@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiver/async.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/outlined_text.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/common/widgets/outlined_text.dart';
 
 class CountdownTimerText extends StatefulWidget {
   const CountdownTimerText({

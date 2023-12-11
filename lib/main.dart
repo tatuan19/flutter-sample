@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/views/waiting_view.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/ui/login/login_screen.dart';
+import 'package:sample/ui/router/app_router.dart';
+import 'package:sample/ui/waiting/waiting_screen.dart';
 
 import 'firebase_options.dart';
-import 'views/login_view.dart';
-import 'views/routes/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,9 +44,9 @@ class HomePage extends StatelessWidget {
           case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
             if (user == null) {
-              return const LoginView();
+              return const LoginScreen();
             } else {
-              return const WaitingView();
+              return const WaitingScreen();
             }
           default:
             return const Center(

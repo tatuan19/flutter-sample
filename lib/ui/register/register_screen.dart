@@ -3,18 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/firebase_options.dart';
-import 'package:sample/utilities/dialogs/error_dialog.dart';
-import 'package:sample/views/routes/app_router.gr.dart';
+import 'package:sample/common/widgets/dialogs/error_dialog.dart';
+import 'package:sample/ui/router/app_router.gr.dart';
 
 @RoutePage()
-class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 

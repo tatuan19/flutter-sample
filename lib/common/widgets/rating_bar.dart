@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/theme/sizes.dart';
+import 'package:sample/common/themes/sizes.dart';
 
 class CustomRatingBar extends StatefulWidget {
   const CustomRatingBar({

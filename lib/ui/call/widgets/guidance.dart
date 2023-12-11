@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:sample/helpers/animations/fade_and_scale_transition.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/rating_bar.dart';
+import 'package:sample/common/widgets/animations/fade_and_scale_transition.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/common/widgets/rating_bar.dart';
 
 enum GuidanceStep {
   waiting,

@@ -1,19 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/helpers/theme/sizes.dart';
-import 'package:sample/helpers/widgets/grey_button.dart';
-import 'package:sample/views/routes/app_router.gr.dart';
-import 'package:sample/views/waiting_view.dart';
+import 'package:sample/common/themes/sizes.dart';
+import 'package:sample/common/widgets/buttons/grey_button.dart';
+import 'package:sample/ui/router/app_router.gr.dart';
+import 'package:sample/ui/waiting/waiting_screen.dart';
 
 @RoutePage()
-class MainView extends StatefulWidget {
-  const MainView({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<MainView> createState() => _MainViewState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MainViewState extends State<MainView> {
+class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
 
   @override
@@ -63,7 +63,7 @@ class _MainViewState extends State<MainView> {
         ],
       ),
       body: <Widget>[
-        const WaitingView(),
+        const WaitingScreen(),
         const Text('Index 1: 店舗で参加'),
         const Text('Index 2: メッセージ'),
         const Text('Index 3: マイページ'),
