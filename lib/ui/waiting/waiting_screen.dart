@@ -176,7 +176,7 @@ class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: 'u90AN5QpbXE',
+      initialVideoId: 'q7y4av-Dr4I',
       flags: const YoutubePlayerFlags(mute: true, captionLanguage: 'ja'),
     );
   }
@@ -270,7 +270,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: 'u90AN5QpbXE',
+      initialVideoId: 'q7y4av-Dr4I',
       flags: const YoutubePlayerFlags(autoPlay: false, captionLanguage: 'ja'),
     );
   }
