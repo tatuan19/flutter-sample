@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/common/widgets/buttons/scroll_arrow_button.dart';
 import 'package:sample/common/widgets/buttons/grey_button.dart';
@@ -8,37 +9,31 @@ import 'package:sample/ui/router/router_key.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
-class WaitingScreen extends StatefulWidget {
+class WaitingScreen extends HookWidget {
   const WaitingScreen({super.key});
 
   @override
-  State<WaitingScreen> createState() => _WaitingScreenState();
-}
-
-class _WaitingScreenState extends State<WaitingScreen> {
-  final ScrollController _scrollController = ScrollController();
-
-  bool dateEnded = false;
-  bool shouldScrollDown = true;
-
-  void scrollToTop() {
-    _scrollController.animateTo(
-      _scrollController.position.minScrollExtent,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-  void scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final scrollController = useScrollController();
+    final dateEnded = useState(false);
+    final shouldScrollDown = useState(true);
+
+    void scrollToTop() {
+      scrollController.animateTo(
+        scrollController.position.minScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
+
+    void scrollToBottom() {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
+
     final isWaitingRoute = context.router.current.name == WaitingRoute.name;
     double height = MediaQuery.of(context).size.height -
         AppBar().preferredSize.height -
@@ -55,7 +50,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        controller: _scrollController,
+        controller: scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,8 +75,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
                       alignment: Alignment.topLeft,
                       child: ScrollArrowButton(
                           onPressed: () {
-                            shouldScrollDown ? scrollToBottom() : scrollToTop();
-                            shouldScrollDown = !shouldScrollDown;
+                            shouldScrollDown.value
+                                ? scrollToBottom()
+                                : scrollToTop();
+                            shouldScrollDown.value = !shouldScrollDown.value;
                           },
                           size: 80.0,
                           color: Colors.white),
@@ -91,7 +88,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                         child: FullScreenVideoPlayer()),
                     Align(
                         alignment: Alignment.bottomCenter,
-                        child: !dateEnded
+                        child: !dateEnded.value
                             ? Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -106,9 +103,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
                                           if (result != null &&
                                               result == RouterKey.dateEnded) {
-                                            setState(() {
-                                              dateEnded = true;
-                                            });
+                                            dateEnded.value = true;
                                           }
                                         },
                                         child: const Text(
@@ -154,35 +149,24 @@ class _WaitingScreenState extends State<WaitingScreen> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 }
 
-class IntroVideoPlayer extends StatefulWidget {
-  const IntroVideoPlayer({super.key});
-
-  @override
-  State<IntroVideoPlayer> createState() => _IntroVideoPlayerState();
-}
-
-class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
-  late YoutubePlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: 'q7y4av-Dr4I',
-      flags: const YoutubePlayerFlags(mute: true, captionLanguage: 'ja'),
-    );
-  }
+class IntroVideoPlayer extends HookWidget {
+  const IntroVideoPlayer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final YoutubePlayerController _controller = useYoutubePlayerController(
+      initialVideoId: 'q7y4av-Dr4I',
+      flags: const YoutubePlayerFlags(mute: true, captionLanguage: 'ja'),
+    );
+
+    useEffect(() {
+      return () {
+        _controller.dispose();
+      };
+    }, const []);
+
     return YoutubePlayer(
       controller: _controller,
       showVideoProgressIndicator: true,
@@ -198,10 +182,24 @@ class _IntroVideoPlayerState extends State<IntroVideoPlayer> {
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  YoutubePlayerController useYoutubePlayerController({
+    required String initialVideoId,
+    required YoutubePlayerFlags flags,
+  }) {
+    final controller = useMemoized(
+      () => YoutubePlayerController(
+        initialVideoId: initialVideoId,
+        flags: flags,
+      ),
+    );
+
+    useEffect(() {
+      return () {
+        controller.dispose();
+      };
+    }, const []);
+
+    return controller;
   }
 }
 
@@ -255,30 +253,24 @@ class RoomInfo extends StatelessWidget {
   }
 }
 
-class FullScreenVideoPlayer extends StatefulWidget {
-  const FullScreenVideoPlayer({super.key});
-
-  @override
-  State<FullScreenVideoPlayer> createState() => _FullScreenVideoPlayerState();
-}
-
-class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
-  late YoutubePlayerController _controller;
-  bool skipVideo = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: 'q7y4av-Dr4I',
-      flags: const YoutubePlayerFlags(autoPlay: false, captionLanguage: 'ja'),
-    );
-  }
+class FullScreenVideoPlayer extends HookWidget {
+  const FullScreenVideoPlayer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final YoutubePlayerController controller = useYoutubePlayerController(
+      initialVideoId: 'q7y4av-Dr4I',
+      flags: const YoutubePlayerFlags(autoPlay: false, captionLanguage: 'ja'),
+    );
+
+    useEffect(() {
+      return () {
+        controller.dispose();
+      };
+    }, const []);
+
     return YoutubePlayer(
-      controller: _controller,
+      controller: controller,
       showVideoProgressIndicator: true,
       bottomActions: [
         ProgressBar(
@@ -292,9 +284,23 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  YoutubePlayerController useYoutubePlayerController({
+    required String initialVideoId,
+    required YoutubePlayerFlags flags,
+  }) {
+    final controller = useMemoized(
+      () => YoutubePlayerController(
+        initialVideoId: initialVideoId,
+        flags: flags,
+      ),
+    );
+
+    useEffect(() {
+      return () {
+        controller.dispose();
+      };
+    }, const []);
+
+    return controller;
   }
 }

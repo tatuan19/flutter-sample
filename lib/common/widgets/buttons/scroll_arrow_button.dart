@@ -1,84 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sample/common/themes/sizes.dart';
 
-class ScrollArrowButton extends StatefulWidget {
+class ScrollArrowButton extends HookWidget {
   const ScrollArrowButton({
-    super.key,
+    Key? key,
     required this.onPressed,
     this.color,
     this.size = ButtonHeight.medium,
-  });
+  }) : super(key: key);
 
   final VoidCallback onPressed;
   final double size;
   final Color? color;
 
   @override
-  _ScrollArrowButtonState createState() => _ScrollArrowButtonState();
-}
-
-class _ScrollArrowButtonState extends State<ScrollArrowButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  final ScrollController _scrollController = ScrollController();
-
-  bool isArrowUp = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _animation = Tween<double>(
-      begin: 0,
-      end: 0.5,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.linear,
-    ));
-  }
-
-  void scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final isArrowUp = useState(false);
+    final controller = useAnimationController(
+      duration: const Duration(milliseconds: 300),
+    );
+    final animation = useAnimation<double>(
+      Tween<double>(
+        begin: 0,
+        end: 0.5,
+      ).animate(CurvedAnimation(
+        parent: controller,
+        curve: Curves.linear,
+      )),
+    );
+
     return GestureDetector(
       onTap: () {
-        isArrowUp = !isArrowUp;
+        isArrowUp.value = !isArrowUp.value;
 
-        if (isArrowUp) {
-          _controller.forward();
+        if (isArrowUp.value) {
+          controller.forward();
         } else {
-          _controller.reverse();
+          controller.reverse();
         }
 
-        widget.onPressed();
+        onPressed();
       },
       child: RotationTransition(
-        turns: _animation,
+        turns: AlwaysStoppedAnimation<double>(animation), // Explicit type
         child: Icon(
           Icons.keyboard_arrow_down,
-          size: widget.size,
-          color: widget.color,
+          size: size,
+          color: color,
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

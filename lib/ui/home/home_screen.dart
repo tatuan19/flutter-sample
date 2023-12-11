@@ -89,7 +89,7 @@ class EnterRoomButton extends StatelessWidget {
         child: GreyButton(
             height: ButtonHeight.large,
             onPressed: () {
-              context.router.push(const WaitingRoute());
+              context.router.push(WaitingRoute());
             },
             child: const Column(
               mainAxisSize: MainAxisSize.min,

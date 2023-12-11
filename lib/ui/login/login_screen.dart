@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           email: _email.text,
                           password: _password.text,
                         );
-                        context.router.replace(const WaitingRoute());
+                        context.router.replace(WaitingRoute());
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           await showErrorDialog(

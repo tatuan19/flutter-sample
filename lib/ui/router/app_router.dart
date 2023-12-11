@@ -9,8 +9,8 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: HomeRoute.page, initial: false),
-        AutoRoute(page: WaitingRoute.page),
+        AutoRoute(page: WaitingRoute.page, initial: true),
         AutoRoute(page: CallRoute.page),
-        AutoRoute(page: PostRoute.page, initial: true),
+        AutoRoute(page: PostRoute.page),
       ];
 }
