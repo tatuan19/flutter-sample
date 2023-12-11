@@ -279,8 +279,11 @@ class _CallScreenState extends State<CallScreen> {
                 )))
       ]);
     } else {
+      bool partnerJoined = _step != GuidanceStep.beginning;
+
       bottomChild = Column(children: [
-        UserSoundWave(hasVoiceCome: _hasVoiceCome),
+        UserSoundWave(
+            hasVoiceCome: _hasVoiceCome, partnerJoined: partnerJoined),
         const SizedBox(height: 30.0),
         BottomActionBar(
             muted: _muted,
@@ -308,9 +311,11 @@ class _CallScreenState extends State<CallScreen> {
 }
 
 class UserSoundWave extends StatelessWidget {
-  const UserSoundWave({super.key, required this.hasVoiceCome});
+  const UserSoundWave(
+      {super.key, required this.hasVoiceCome, required this.partnerJoined});
 
   final bool hasVoiceCome;
+  final bool partnerJoined;
 
   @override
   Widget build(BuildContext context) {
@@ -321,11 +326,13 @@ class UserSoundWave extends StatelessWidget {
           radius: 20,
           backgroundImage: AssetImage('assets/my_avatar.png'),
         ),
-        SizedBox(height: 60.0, child: SoundWave(hasVoiceCome: hasVoiceCome)),
-        const CircleAvatar(
-          radius: 20,
-          backgroundImage: AssetImage('assets/sample_avatar.png'),
-        )
+        if (partnerJoined) ...[
+          SizedBox(height: 60.0, child: SoundWave(hasVoiceCome: hasVoiceCome)),
+          const CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage('assets/sample_avatar.png'),
+          )
+        ]
       ],
     );
   }
