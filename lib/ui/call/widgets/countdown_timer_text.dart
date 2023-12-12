@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:quiver/async.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/common/widgets/outlined_text.dart';
+import 'package:sample/ui/call/hooks/use_count_down_timer.dart';
 
-class CountdownTimerText extends StatefulWidget {
+class CountdownTimerText extends HookWidget {
   const CountdownTimerText({
     super.key,
     required this.duration,
@@ -18,56 +19,18 @@ class CountdownTimerText extends StatefulWidget {
   final Function onRemindThresholdReached;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CountdownTimerTextState createState() => _CountdownTimerTextState();
-}
-
-class _CountdownTimerTextState extends State<CountdownTimerText> {
-  late CountdownTimer _countdownTimer;
-  late int _start;
-  late Duration _remainingTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _start = widget.duration.inSeconds;
-    _remainingTime = widget.duration;
-    _countdownTimer = CountdownTimer(
-      widget.duration,
-      const Duration(seconds: 1),
-    );
-    startTimer();
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    _countdownTimer.cancel();
-  }
-
-  void startTimer() {
-    var sub = _countdownTimer.listen(null);
-    sub.onData((duration) {
-      setState(() {
-        _remainingTime = Duration(seconds: _start - duration.elapsed.inSeconds);
-      });
-      if (_remainingTime == widget.remindThreshold) {
-        widget.onRemindThresholdReached();
-      }
-    });
-
-    sub.onDone(() {
-      widget.onTimerEnd();
-      sub.cancel();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final remainingTime = useCountdownTimer(
+      duration: duration,
+      onTimerEnd: onTimerEnd,
+      remindThreshold: remindThreshold,
+      onRemindThresholdReached: onRemindThresholdReached,
+    );
+
     final minutes =
-        _remainingTime.inMinutes.remainder(60).toString().padLeft(2, '0');
+        remainingTime.inMinutes.remainder(60).toString().padLeft(2, '0');
     final seconds =
-        _remainingTime.inSeconds.remainder(60).toString().padLeft(2, '0');
+        remainingTime.inSeconds.remainder(60).toString().padLeft(2, '0');
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -76,7 +39,7 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
           '残り時間：',
           style: TextStyle(color: Colors.white),
         ),
-        if (_remainingTime.compareTo(widget.remindThreshold) <= 0)
+        if (remainingTime.compareTo(remindThreshold) <= 0)
           OutlinedText(
             text: '$minutes:$seconds',
             fontWeight: FontWeight.bold,
@@ -87,9 +50,10 @@ class _CountdownTimerTextState extends State<CountdownTimerText> {
           Text(
             '$minutes:$seconds',
             style: const TextStyle(
-                fontSize: FontSize.small,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+              fontSize: FontSize.small,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           )
       ],
     );
