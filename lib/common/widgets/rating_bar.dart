@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sample/common/themes/sizes.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CustomRatingBar extends StatefulWidget {
+class CustomRatingBar extends HookWidget {
   const CustomRatingBar({
     super.key,
     this.maxRating = 5,
@@ -26,57 +27,46 @@ class CustomRatingBar extends StatefulWidget {
   final ValueChanged<double> onRatingUpdate;
 
   @override
-  _CustomRatingBarState createState() => _CustomRatingBarState();
-}
-
-class _CustomRatingBarState extends State<CustomRatingBar> {
-  late double rating;
-
-  @override
-  void initState() {
-    super.initState();
-    rating = widget.initialRating;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final rating = useState<double>(initialRating);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
-        widget.maxRating,
+        maxRating,
         (index) => InkWell(
           onTap: () {
-            double newRating = ((index + 1) + widget.minRating).toDouble();
-            setState(() {
-              rating = newRating;
-            });
-            widget.onRatingUpdate(newRating);
+            final newRating = (index + 1 + minRating).toDouble();
+            rating.value = newRating;
+            onRatingUpdate(newRating);
           },
-          child: Column(children: [
-            Icon(
-              (index + 1) + widget.minRating <= rating
-                  ? widget.ratedIcon
-                  : widget.unratedIcon,
-              size: widget.itemSize,
-              color: (index + 1) + widget.minRating <= rating
-                  ? widget.ratedColor
-                  : widget.unratedColor,
-            ),
-            const SizedBox(height: 5.0),
-            if (index == 0)
-              Text(
-                '良くない',
-                style: TextStyle(
-                    fontSize: FontSize.small, color: widget.unratedColor),
+          child: Column(
+            children: [
+              Icon(
+                (index + 1 + minRating) <= rating.value
+                    ? ratedIcon
+                    : unratedIcon,
+                size: itemSize,
+                color: (index + 1 + minRating) <= rating.value
+                    ? ratedColor
+                    : unratedColor,
               ),
-            if (index + 1 == widget.maxRating)
-              Text(
-                '良い',
-                style: TextStyle(
-                    fontSize: FontSize.small, color: widget.unratedColor),
-              ),
-          ]),
+              const SizedBox(height: 5.0),
+              if (index == 0)
+                Text(
+                  '良くない',
+                  style:
+                      TextStyle(fontSize: FontSize.small, color: unratedColor),
+                ),
+              if (index + 1 == maxRating)
+                Text(
+                  '良い',
+                  style:
+                      TextStyle(fontSize: FontSize.small, color: unratedColor),
+                ),
+            ],
+          ),
         ),
       ),
     );

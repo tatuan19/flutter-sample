@@ -161,7 +161,7 @@ class RatingGuidance extends StatelessWidget {
         const SizedBox(height: 30.0),
         CustomRatingBar(
           maxRating: 5,
-          initialRating: 3,
+          initialRating: 5,
           itemSize: 40.0,
           ratedIcon: Icons.star,
           unratedIcon: Icons.star_border,
