@@ -282,7 +282,8 @@ class _CallScreenState extends State<CallScreen> {
                 )))
       ]);
     } else {
-      bool partnerJoined = _step != GuidanceStep.beginning;
+      bool partnerJoined = _step == GuidanceStep.duringConversation ||
+          _step == GuidanceStep.reminder;
 
       bottomChild = Column(children: [
         UserSoundWave(
