@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class FadeAndScaleAnimation extends StatefulWidget {
+class FadeAndScaleAnimation extends HookWidget {
   const FadeAndScaleAnimation({
     super.key,
     required this.child,
@@ -11,62 +12,30 @@ class FadeAndScaleAnimation extends StatefulWidget {
   final Duration duration;
 
   @override
-  _FadeAndScaleAnimationState createState() => _FadeAndScaleAnimationState();
-}
-
-class _FadeAndScaleAnimationState extends State<FadeAndScaleAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
-
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _controller.forward();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
+    final controller = useAnimationController(duration: duration);
+
+    final opacityTween = Tween<double>(begin: 0.0, end: 1.0);
+    final scaleTween = Tween<double>(begin: 0.5, end: 1.0);
+
+    useEffect(() {
+      controller.forward();
+      return () => controller.dispose();
+    }, [controller]);
+
+    return TweenAnimationBuilder(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: duration,
+      builder: (context, value, child) {
         return Opacity(
-          opacity: _opacityAnimation.value,
+          opacity: opacityTween.transform(value),
           child: Transform.scale(
-            scale: _scaleAnimation.value,
-            child: widget.child,
+            scale: scaleTween.transform(value),
+            child: child,
           ),
         );
       },
+      child: child,
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
