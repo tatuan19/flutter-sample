@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/common/widgets/buttons/grey_button.dart';
@@ -32,9 +33,6 @@ class _CallScreenState extends State<CallScreen> {
   bool _hasVoiceCome = false;
   GuidanceStep _step = GuidanceStep.waiting;
 
-  final appId = "f3de06bbd5204c9ea642ae7e8516394e";
-  final token =
-      "007eJxTYJhtfOFXzKW2gvUtMdcN5crbf8bMX2hza89L8YNN0+ffLV2swJBmnJJqYJaUlGJqZGCSbJmaaGZilJhqnmphamhmbGmSumBTeWpDICNDwq9sBkYoBPFZGEpSi0sYGAA/6SLY";
   final channelId = "test";
   final remainingTime = const Duration(seconds: 10);
   final remindThreshold = const Duration(seconds: 5);
@@ -59,7 +57,8 @@ class _CallScreenState extends State<CallScreen> {
 
       // Create an instance of the Agora engine
       _agoraEngine = createAgoraRtcEngine();
-      await _agoraEngine.initialize(RtcEngineContext(appId: appId));
+      await _agoraEngine
+          .initialize(RtcEngineContext(appId: dotenv.get('AGORA_APP_ID')));
 
       // Enables the audioVolumeIndication
       await _agoraEngine.enableAudioVolumeIndication(
@@ -111,7 +110,7 @@ class _CallScreenState extends State<CallScreen> {
 
     try {
       await _agoraEngine.joinChannel(
-        token: token,
+        token: dotenv.get('AUTH_TOKEN'),
         channelId: channelId,
         options: options,
         uid: uid,

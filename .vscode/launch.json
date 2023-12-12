@@ -5,9 +5,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			// flutter run --debug --dart-define=env=.env.development
 			"name": "sample",
 			"request": "launch",
-			"type": "dart"
+			"type": "dart",
+			"args": [
+				"--dart-define",
+				"env=.env.development"
+			]
 		},
 		{
 			"name": "sample (profile mode)",
@@ -16,10 +21,15 @@
 			"flutterMode": "profile"
 		},
 		{
+			// flutter run --debug --dart-define=env=.env.production
 			"name": "sample (release mode)",
 			"request": "launch",
 			"type": "dart",
-			"flutterMode": "release"
+			"flutterMode": "release",
+			"args": [
+				"--dart-define",
+				"env=.env.production"
+			]
 		}
 	]
 }

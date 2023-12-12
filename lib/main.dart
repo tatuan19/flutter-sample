@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/ui/login/login_screen.dart';
 import 'package:sample/ui/router/app_router.dart';
@@ -9,7 +10,9 @@ import 'package:sample/ui/waiting/waiting_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  const envFile = String.fromEnvironment('env');
+  await dotenv.load(fileName: envFile);
+
   runApp(const MyApp());
 }
 
