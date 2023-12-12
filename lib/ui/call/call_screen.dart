@@ -30,11 +30,11 @@ class _CallScreenState extends State<CallScreen> {
   bool _muted = false;
   bool _speakerOff = false;
   bool _hasVoiceCome = false;
-  GuidanceStep _step = GuidanceStep.rating;
+  GuidanceStep _step = GuidanceStep.waiting;
 
   final appId = "f3de06bbd5204c9ea642ae7e8516394e";
   final token =
-      "007eJxTYJDiNWP9Wh6i+c3cpO5mzOwbTLNtPopGCmQ1fQlb8UZr7gEFhjTjlFQDs6SkFFMjA5Nky9REMxOjxFTzVAtTQzNjS5NUrrqy1IZARoYJ7JUMjFAI4rMwlKQWlzAwAADDtR1/";
+      "007eJxTYJhtfOFXzKW2gvUtMdcN5crbf8bMX2hza89L8YNN0+ffLV2swJBmnJJqYJaUlGJqZGCSbJmaaGZilJhqnmphamhmbGmSumBTeWpDICNDwq9sBkYoBPFZGEpSi0sYGAA/6SLY";
   final channelId = "test";
   final remainingTime = const Duration(seconds: 10);
   final remindThreshold = const Duration(seconds: 5);
