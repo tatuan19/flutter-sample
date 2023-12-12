@@ -123,14 +123,16 @@ class WaitingScreen extends HookWidget {
                                         side: const BorderSide(
                                             color: Colors.white, width: 2.0),
                                       ),
-                                      const Text(
-                                        '今後もスキップする（後で設定画面から変更できます）',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: FontSize.small,
-                                          fontWeight: FontWeight.bold,
+                                      const Expanded(
+                                        child: Text(
+                                          '今後もスキップする（後で設定画面から変更できます）',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: FontSize.small,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   )
                                 ],

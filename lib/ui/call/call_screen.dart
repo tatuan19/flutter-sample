@@ -30,7 +30,7 @@ class _CallScreenState extends State<CallScreen> {
   bool _muted = false;
   bool _speakerOff = false;
   bool _hasVoiceCome = false;
-  GuidanceStep _step = GuidanceStep.duringConversation;
+  GuidanceStep _step = GuidanceStep.rating;
 
   final appId = "f3de06bbd5204c9ea642ae7e8516394e";
   final token =
