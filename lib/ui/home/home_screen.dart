@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/common/widgets/buttons/grey_button.dart';
 import 'package:sample/ui/router/app_router.gr.dart';
+import 'package:sample/ui/store/store_screen.dart';
 import 'package:sample/ui/waiting/waiting_screen.dart';
 
 @RoutePage()
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: <Widget>[
         const WaitingScreen(),
-        const Text('Index 1: 店舗で参加'),
+        const StoreScreen(),
         const Text('Index 2: メッセージ'),
         const Text('Index 3: マイページ'),
       ][currentPageIndex],
@@ -89,7 +90,7 @@ class EnterRoomButton extends StatelessWidget {
         child: GreyButton(
             height: ButtonHeight.large,
             onPressed: () {
-              context.router.push(WaitingRoute());
+              context.router.push(const WaitingRoute());
             },
             child: const Column(
               mainAxisSize: MainAxisSize.min,
