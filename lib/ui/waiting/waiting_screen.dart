@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sample/common/themes/sizes.dart';
 import 'package:sample/common/widgets/buttons/scroll_arrow_button.dart';
 import 'package:sample/common/widgets/buttons/grey_button.dart';
+import 'package:sample/common/widgets/custom_app_bar.dart';
 import 'package:sample/ui/router/app_router.gr.dart';
 import 'package:sample/ui/router/router_key.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -40,15 +41,7 @@ class WaitingScreen extends HookWidget {
         kBottomNavigationBarHeight;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'オンラインで参加',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: Text('オンラインで参加')),
       body: SingleChildScrollView(
         controller: scrollController,
         child: Column(
