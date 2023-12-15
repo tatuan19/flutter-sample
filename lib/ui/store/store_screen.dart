@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hive/hive.dart';
+import 'package:sample/common/constants/local_data_keys.dart';
 import 'package:sample/common/widgets/custom_app_bar.dart';
 import 'package:sample/ui/web_view/custom_web_view.dart';
 
@@ -21,13 +23,21 @@ class StoreScreen extends StatelessWidget {
       body: Stack(
         children: [
           CustomWebView(
-            initialUrl: url,
-            onLoadStop: () async {
-              await cookieManager
-                  .getCookie(url: Uri.parse(url), name: "_couplink_sess")
-                  .then((cookie) => devtools.log(cookie?.value ?? ""));
-            },
-          )
+              initialUrl: url,
+              onLoadStop: () async {
+                cookieManager
+                    .getCookie(url: Uri.parse(url), name: "_couplink_sess")
+                    .then((cookies) {
+                  final sessionId = cookies?.value;
+
+                  if (sessionId != null && sessionId.isNotEmpty) {
+                    devtools.log('sessionId: $sessionId');
+                    Hive.box(localDataBox).put(sessionIdKey, sessionId);
+                  }
+                }).catchError((error) {
+                  devtools.log('error: $error');
+                });
+              })
         ],
       ),
     );
