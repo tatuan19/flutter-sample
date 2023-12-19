@@ -9,6 +9,8 @@ import 'package:sample/ui/router/app_router.gr.dart';
 import 'package:sample/ui/router/router_key.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import 'use_youtube_player_controller.dart';
+
 @RoutePage()
 class WaitingScreen extends HookWidget {
   const WaitingScreen({super.key});
@@ -18,6 +20,16 @@ class WaitingScreen extends HookWidget {
     final scrollController = useScrollController();
     final dateEnded = useState(false);
     final shouldScrollDown = useState(true);
+
+    final introVideoController = useYoutubePlayerController(
+      initialVideoId: 'q7y4av-Dr4I',
+      flags: const YoutubePlayerFlags(mute: true, captionLanguage: 'ja'),
+    );
+
+    final fullScreenVideoController = useYoutubePlayerController(
+      initialVideoId: 'q7y4av-Dr4I',
+      flags: const YoutubePlayerFlags(autoPlay: false, captionLanguage: 'ja'),
+    );
 
     void scrollToTop() {
       scrollController.animateTo(
@@ -47,7 +59,7 @@ class WaitingScreen extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const IntroVideoPlayer(),
+            VideoPlayer(controller: introVideoController),
             const RoomInfo(),
             if (isWaitingRoute)
               Container(
@@ -76,9 +88,10 @@ class WaitingScreen extends HookWidget {
                           size: 80.0,
                           color: Colors.white),
                     ),
-                    const Align(
-                        alignment: Alignment.center,
-                        child: FullScreenVideoPlayer()),
+                    Align(
+                      alignment: Alignment.center,
+                      child: VideoPlayer(controller: fullScreenVideoController),
+                    ),
                     Align(
                         alignment: Alignment.bottomCenter,
                         child: !dateEnded.value
@@ -146,24 +159,15 @@ class WaitingScreen extends HookWidget {
   }
 }
 
-class IntroVideoPlayer extends HookWidget {
-  const IntroVideoPlayer({Key? key}) : super(key: key);
+class VideoPlayer extends HookWidget {
+  const VideoPlayer({super.key, required this.controller});
+
+  final YoutubePlayerController controller;
 
   @override
   Widget build(BuildContext context) {
-    final YoutubePlayerController _controller = useYoutubePlayerController(
-      initialVideoId: 'q7y4av-Dr4I',
-      flags: const YoutubePlayerFlags(mute: true, captionLanguage: 'ja'),
-    );
-
-    useEffect(() {
-      return () {
-        _controller.dispose();
-      };
-    }, const []);
-
     return YoutubePlayer(
-      controller: _controller,
+      controller: controller,
       showVideoProgressIndicator: true,
       bottomActions: [
         ProgressBar(
@@ -175,26 +179,6 @@ class IntroVideoPlayer extends HookWidget {
         ),
       ],
     );
-  }
-
-  YoutubePlayerController useYoutubePlayerController({
-    required String initialVideoId,
-    required YoutubePlayerFlags flags,
-  }) {
-    final controller = useMemoized(
-      () => YoutubePlayerController(
-        initialVideoId: initialVideoId,
-        flags: flags,
-      ),
-    );
-
-    useEffect(() {
-      return () {
-        controller.dispose();
-      };
-    }, const []);
-
-    return controller;
   }
 }
 
@@ -245,57 +229,5 @@ class RoomInfo extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class FullScreenVideoPlayer extends HookWidget {
-  const FullScreenVideoPlayer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final YoutubePlayerController controller = useYoutubePlayerController(
-      initialVideoId: 'q7y4av-Dr4I',
-      flags: const YoutubePlayerFlags(autoPlay: false, captionLanguage: 'ja'),
-    );
-
-    useEffect(() {
-      return () {
-        controller.dispose();
-      };
-    }, const []);
-
-    return YoutubePlayer(
-      controller: controller,
-      showVideoProgressIndicator: true,
-      bottomActions: [
-        ProgressBar(
-          isExpanded: true,
-          colors: const ProgressBarColors(
-            playedColor: Colors.red,
-            handleColor: Colors.redAccent,
-          ),
-        ),
-      ],
-    );
-  }
-
-  YoutubePlayerController useYoutubePlayerController({
-    required String initialVideoId,
-    required YoutubePlayerFlags flags,
-  }) {
-    final controller = useMemoized(
-      () => YoutubePlayerController(
-        initialVideoId: initialVideoId,
-        flags: flags,
-      ),
-    );
-
-    useEffect(() {
-      return () {
-        controller.dispose();
-      };
-    }, const []);
-
-    return controller;
   }
 }
